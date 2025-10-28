@@ -1,0 +1,1002 @@
+
+> blockchain-wallet-ui@0.1.0 test
+> react-scripts test --watchAll=false --verbose
+
+PASS src/reportWebVitals.test.ts
+  reportWebVitals
+    √ when handler provided, imports web-vitals and invokes callbacks (6 ms)
+    √ when no handler, does nothing (2 ms)
+
+PASS src/services/api.test.ts
+  services/api - mock backend
+    √ listWallets returns default demo wallet and persists (4 ms)
+    √ create/delete wallet flow updates storage (2 ms)
+    √ getBalance returns numeric balance and currency (1 ms)
+    √ system healthCheck returns ok (3 ms)
+    √ system ping returns true in mock
+  services/api - real backend
+    √ listWallets via axios with retry (2 ms)
+    √ create/delete wallet call axios
+    √ getBalance and history (1 ms)
+    √ sendTransaction calls axios.post with params (1 ms)
+    √ systemService.ping success and failure (1 ms)
+    √ systemService.healthCheck aborts when signal aborted (2 ms)
+    √ apiRuntime set/get config (1 ms)
+
+PASS src/services/api.runtime.test.ts
+  api runtime config
+    √ initial baseUrl is default value (3 ms)
+    √ setRuntime updates baseUrl dynamically (1 ms)
+
+PASS src/index.test.tsx
+  index bootstrap
+    √ mounts App and calls reportWebVitals (68 ms)
+
+  console.time
+    refreshWallets#1: 6 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    refreshWallets#1: 2 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    refreshWallets#2: 12 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    refreshWallets#1: 2 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+PASS src/hooks/useApiConfig.test.tsx
+  useApiConfig
+    √ saveConfig rejects invalid URL (28 ms)
+    √ saveConfig rejects short apiKey (36 ms)
+    √ saveConfig succeeds and persists keys (46 ms)
+    √ testConnectivity invalid URL (17 ms)
+    √ testConnectivity success (15 ms)
+    √ testConnectivity failure (8 ms)
+    √ testConnectivity throws (5 ms)
+    √ debounce prevents duplicate calls (24 ms)
+    √ clearSensitive clears keys and resets apiKey (22 ms)
+
+  console.time
+    refreshWallets#1: 3 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    refreshWallets#1: 0 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    refreshWallets#1: 2 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.error
+    Error: Uncaught [Error: useWalletContext must be used within WalletProvider]
+        at reportException (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\helpers\runtime-script-errors.js:66:24)
+        at innerInvokeEventListeners (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:341:9)
+        at invokeEventListeners (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:274:3)
+        at HTMLUnknownElementImpl._dispatch (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:221:9)
+        at HTMLUnknownElementImpl.dispatchEvent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:94:17)
+        at HTMLUnknownElement.dispatchEvent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\generated\EventTarget.js:231:34)
+        at Object.invokeGuardedCallbackDev (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4213:16)
+        at invokeGuardedCallback (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4277:31)
+        at beginWork$1 (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:27490:7)
+        at performUnitOfWork (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26599:12)
+        at workLoopSync (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26505:5)
+        at renderRootSync (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26473:7)
+        at performConcurrentWorkOnRoot (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:25777:74)
+        at flushActQueue (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react\cjs\react.development.js:2667:24)
+        at act (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react\cjs\react.development.js:2582:11)
+        at C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\act-compat.js:47:25
+        at renderRoot (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\pure.js:180:26)
+        at render (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\pure.js:271:10)
+        at C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:127:24
+        at Object.<anonymous> (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\expect\build\toThrowMatchers.js:83:11)
+        at Object.toThrow (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\expect\build\index.js:382:21)
+        at Object.<anonymous> (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:127:35)
+        at Promise.then.completed (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\utils.js:391:28)
+        at new Promise (<anonymous>)
+        at callAsyncCircusFn (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\utils.js:316:10)
+        at _callCircusTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:218:40)
+        at _runTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:155:3)
+        at _runTestsForDescribeBlock (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:66:9)
+        at _runTestsForDescribeBlock (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:60:9)
+        at run (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:25:3)
+        at runAndTransformResultsToJestFormat (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
+        at jestAdapter (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
+        at runTestInternal (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\runTest.js:389:16)
+        at runTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\runTest.js:475:34)
+        at Object.worker (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\testWorker.js:133:12) Error: useWalletContext must be used within WalletProvider
+        at useWalletContext (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.tsx:152:19)
+        at Bad (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:124:23)
+        at renderWithHooks (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:15486:18)
+        at mountIndeterminateComponent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:20103:13)
+        at beginWork (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:21626:16)
+        at HTMLUnknownElement.callCallback (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4164:14)
+        at HTMLUnknownElement.callTheUserObjectsOperation (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\generated\EventListener.js:26:30)
+        at innerInvokeEventListeners (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:338:25)
+        at invokeEventListeners (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:274:3)
+        at HTMLUnknownElementImpl._dispatch (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:221:9)
+        at HTMLUnknownElementImpl.dispatchEvent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:94:17)
+        at HTMLUnknownElement.dispatchEvent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\generated\EventTarget.js:231:34)
+        at Object.invokeGuardedCallbackDev (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4213:16)
+        at invokeGuardedCallback (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4277:31)
+        at beginWork$1 (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:27490:7)
+        at performUnitOfWork (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26599:12)
+        at workLoopSync (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26505:5)
+        at renderRootSync (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26473:7)
+        at performConcurrentWorkOnRoot (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:25777:74)
+        at flushActQueue (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react\cjs\react.development.js:2667:24)
+        at act (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react\cjs\react.development.js:2582:11)
+        at C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\act-compat.js:47:25
+        at renderRoot (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\pure.js:180:26)
+        at render (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\pure.js:271:10)
+        at C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:127:24
+        at Object.<anonymous> (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\expect\build\toThrowMatchers.js:83:11)
+        at Object.toThrow (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\expect\build\index.js:382:21)
+        at Object.<anonymous> (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:127:35)
+        at Promise.then.completed (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\utils.js:391:28)
+        at new Promise (<anonymous>)
+        at callAsyncCircusFn (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\utils.js:316:10)
+        at _callCircusTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:218:40)
+        at _runTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:155:3)
+        at _runTestsForDescribeBlock (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:66:9)
+        at _runTestsForDescribeBlock (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:60:9)
+        at run (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:25:3)
+        at runAndTransformResultsToJestFormat (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
+        at jestAdapter (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
+        at runTestInternal (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\runTest.js:389:16)
+        at runTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\runTest.js:475:34)
+        at Object.worker (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\testWorker.js:133:12)
+
+    [0m [90m 125 |[39m     [36mreturn[39m[33m;[39m
+     [90m 126 |[39m   }
+    [31m[1m>[22m[39m[90m 127 |[39m   [36mreturn[39m originalError[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                        [31m[1m^[22m[39m
+     [90m 128 |[39m }[33m;[39m
+     [90m 129 |[39m[0m
+
+      at console.Object.<anonymous>.console.error (src/setupTests.ts:127:24)
+      at VirtualConsole.<anonymous> (node_modules/jsdom/lib/jsdom/virtual-console.js:29:45)
+      at reportException (node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:70:28)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:341:9)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:274:3)
+      at HTMLUnknownElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:221:9)
+      at HTMLUnknownElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:94:17)
+      at HTMLUnknownElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:231:34)
+      at Object.invokeGuardedCallbackDev (node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+      at invokeGuardedCallback (node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27490:7)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25777:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at src/context/WalletContext.test.tsx:127:24
+      at Object.<anonymous> (node_modules/expect/build/toThrowMatchers.js:83:11)
+      at Object.toThrow (node_modules/expect/build/index.js:382:21)
+      at Object.<anonymous> (src/context/WalletContext.test.tsx:127:35)
+
+  console.error
+    Error: Uncaught [Error: useWalletContext must be used within WalletProvider]
+        at reportException (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\helpers\runtime-script-errors.js:66:24)
+        at innerInvokeEventListeners (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:341:9)
+        at invokeEventListeners (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:274:3)
+        at HTMLUnknownElementImpl._dispatch (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:221:9)
+        at HTMLUnknownElementImpl.dispatchEvent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:94:17)
+        at HTMLUnknownElement.dispatchEvent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\generated\EventTarget.js:231:34)
+        at Object.invokeGuardedCallbackDev (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4213:16)
+        at invokeGuardedCallback (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4277:31)
+        at beginWork$1 (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:27490:7)
+        at performUnitOfWork (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26599:12)
+        at workLoopSync (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26505:5)
+        at renderRootSync (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26473:7)
+        at recoverFromConcurrentError (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:25889:20)
+        at performConcurrentWorkOnRoot (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:25789:22)
+        at flushActQueue (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react\cjs\react.development.js:2667:24)
+        at act (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react\cjs\react.development.js:2582:11)
+        at C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\act-compat.js:47:25
+        at renderRoot (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\pure.js:180:26)
+        at render (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\pure.js:271:10)
+        at C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:127:24
+        at Object.<anonymous> (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\expect\build\toThrowMatchers.js:83:11)
+        at Object.toThrow (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\expect\build\index.js:382:21)
+        at Object.<anonymous> (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:127:35)
+        at Promise.then.completed (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\utils.js:391:28)
+        at new Promise (<anonymous>)
+        at callAsyncCircusFn (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\utils.js:316:10)
+        at _callCircusTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:218:40)
+        at _runTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:155:3)
+        at _runTestsForDescribeBlock (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:66:9)
+        at _runTestsForDescribeBlock (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:60:9)
+        at run (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:25:3)
+        at runAndTransformResultsToJestFormat (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
+        at jestAdapter (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
+        at runTestInternal (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\runTest.js:389:16)
+        at runTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\runTest.js:475:34)
+        at Object.worker (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\testWorker.js:133:12) Error: useWalletContext must be used within WalletProvider
+        at useWalletContext (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.tsx:152:19)
+        at Bad (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:124:23)
+        at renderWithHooks (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:15486:18)
+        at mountIndeterminateComponent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:20103:13)
+        at beginWork (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:21626:16)
+        at HTMLUnknownElement.callCallback (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4164:14)
+        at HTMLUnknownElement.callTheUserObjectsOperation (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\generated\EventListener.js:26:30)
+        at innerInvokeEventListeners (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:338:25)
+        at invokeEventListeners (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:274:3)
+        at HTMLUnknownElementImpl._dispatch (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:221:9)
+        at HTMLUnknownElementImpl.dispatchEvent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:94:17)
+        at HTMLUnknownElement.dispatchEvent (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jsdom\lib\jsdom\living\generated\EventTarget.js:231:34)
+        at Object.invokeGuardedCallbackDev (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4213:16)
+        at invokeGuardedCallback (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:4277:31)
+        at beginWork$1 (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:27490:7)
+        at performUnitOfWork (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26599:12)
+        at workLoopSync (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26505:5)
+        at renderRootSync (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:26473:7)
+        at recoverFromConcurrentError (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:25889:20)
+        at performConcurrentWorkOnRoot (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react-dom\cjs\react-dom.development.js:25789:22)
+        at flushActQueue (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react\cjs\react.development.js:2667:24)
+        at act (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\react\cjs\react.development.js:2582:11)
+        at C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\act-compat.js:47:25
+        at renderRoot (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\pure.js:180:26)
+        at render (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\@testing-library\react\dist\pure.js:271:10)
+        at C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:127:24
+        at Object.<anonymous> (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\expect\build\toThrowMatchers.js:83:11)
+        at Object.toThrow (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\expect\build\index.js:382:21)
+        at Object.<anonymous> (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:127:35)
+        at Promise.then.completed (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\utils.js:391:28)
+        at new Promise (<anonymous>)
+        at callAsyncCircusFn (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\utils.js:316:10)
+        at _callCircusTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:218:40)
+        at _runTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:155:3)
+        at _runTestsForDescribeBlock (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:66:9)
+        at _runTestsForDescribeBlock (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:60:9)
+        at run (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\run.js:25:3)
+        at runAndTransformResultsToJestFormat (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
+        at jestAdapter (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
+        at runTestInternal (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\runTest.js:389:16)
+        at runTest (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\runTest.js:475:34)
+        at Object.worker (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\node_modules\jest-runner\build\testWorker.js:133:12)
+
+    [0m [90m 125 |[39m     [36mreturn[39m[33m;[39m
+     [90m 126 |[39m   }
+    [31m[1m>[22m[39m[90m 127 |[39m   [36mreturn[39m originalError[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                        [31m[1m^[22m[39m
+     [90m 128 |[39m }[33m;[39m
+     [90m 129 |[39m[0m
+
+      at console.Object.<anonymous>.console.error (src/setupTests.ts:127:24)
+      at VirtualConsole.<anonymous> (node_modules/jsdom/lib/jsdom/virtual-console.js:29:45)
+      at reportException (node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:70:28)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:341:9)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:274:3)
+      at HTMLUnknownElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:221:9)
+      at HTMLUnknownElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:94:17)
+      at HTMLUnknownElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:231:34)
+      at Object.invokeGuardedCallbackDev (node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+      at invokeGuardedCallback (node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27490:7)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at recoverFromConcurrentError (node_modules/react-dom/cjs/react-dom.development.js:25889:20)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25789:22)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at src/context/WalletContext.test.tsx:127:24
+      at Object.<anonymous> (node_modules/expect/build/toThrowMatchers.js:83:11)
+      at Object.toThrow (node_modules/expect/build/index.js:382:21)
+      at Object.<anonymous> (src/context/WalletContext.test.tsx:127:35)
+
+  console.error
+    The above error occurred in the <Bad> component:
+    
+        at Bad (C:\Users\plant\Desktop\Rust区块链\Wallet front-end\blockchain-wallet-ui\src\context\WalletContext.test.tsx:124:23)
+    
+    Consider adding an error boundary to your tree to customize error handling behavior.
+    Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+    [0m [90m 125 |[39m     [36mreturn[39m[33m;[39m
+     [90m 126 |[39m   }
+    [31m[1m>[22m[39m[90m 127 |[39m   [36mreturn[39m originalError[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                        [31m[1m^[22m[39m
+     [90m 128 |[39m }[33m;[39m
+     [90m 129 |[39m[0m
+
+      at console.Object.<anonymous>.console.error (src/setupTests.ts:127:24)
+      at logCapturedError (node_modules/react-dom/cjs/react-dom.development.js:18704:23)
+      at update.callback (node_modules/react-dom/cjs/react-dom.development.js:18737:5)
+      at callCallback (node_modules/react-dom/cjs/react-dom.development.js:15036:12)
+      at commitUpdateQueue (node_modules/react-dom/cjs/react-dom.development.js:15057:9)
+      at commitLayoutEffectOnFiber (node_modules/react-dom/cjs/react-dom.development.js:23430:13)
+      at commitLayoutMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24727:9)
+      at commitLayoutEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24713:7)
+      at commitLayoutEffects (node_modules/react-dom/cjs/react-dom.development.js:24651:3)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26862:5)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at finishConcurrentRender (node_modules/react-dom/cjs/react-dom.development.js:25931:9)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25848:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at src/context/WalletContext.test.tsx:127:24
+      at Object.<anonymous> (node_modules/expect/build/toThrowMatchers.js:83:11)
+      at Object.toThrow (node_modules/expect/build/index.js:382:21)
+      at Object.<anonymous> (src/context/WalletContext.test.tsx:127:35)
+
+PASS src/context/WalletContext.test.tsx
+  WalletContext
+    √ setCurrentWallet saves and removes localStorage (83 ms)
+    √ ensureValidNetwork resets to first available when invalid (109 ms)
+    √ refreshWallets sets wallets and default currentWallet (77 ms)
+    √ refreshWallets error is warned once (78 ms)
+    √ concurrent refresh prevents duplicate calls (61 ms)
+    √ storage event updates current wallet and network (78 ms)
+    √ useWalletContext outside provider throws (72 ms)
+
+  console.warn
+    MUI: You have provided an out-of-range value `all` for the select component.
+    Consider providing a value that matches one of the available options or ''.
+    The available values are `24h`, `7d`, `30d`.
+
+    [0m [90m 113 |[39m     [36mreturn[39m[33m;[39m
+     [90m 114 |[39m   }
+    [31m[1m>[22m[39m[90m 115 |[39m   [36mreturn[39m originalWarn[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                       [31m[1m^[22m[39m
+     [90m 116 |[39m }[33m;[39m
+     [90m 117 |[39m
+     [90m 118 |[39m [90m// 在 jsdom 环境下，MUI 输入控件/Portal 以及 Provider 副作用偶尔会触发[39m[0m
+
+      at console.Object.<anonymous>.console.warn (src/setupTests.ts:115:23)
+      at node_modules/@mui/material/Select/SelectInput.js:399:17
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26115:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26998:3)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at finishConcurrentRender (node_modules/react-dom/cjs/react-dom.development.js:26020:9)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25848:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at Object.<anonymous> (src/pages/HistoryPage/HistoryToolbar.test.tsx:9:11)
+
+  console.warn
+    MUI: You have provided an out-of-range value `all` for the select component.
+    Consider providing a value that matches one of the available options or ''.
+    The available values are `24h`, `7d`, `30d`.
+
+    [0m [90m 113 |[39m     [36mreturn[39m[33m;[39m
+     [90m 114 |[39m   }
+    [31m[1m>[22m[39m[90m 115 |[39m   [36mreturn[39m originalWarn[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                       [31m[1m^[22m[39m
+     [90m 116 |[39m }[33m;[39m
+     [90m 117 |[39m
+     [90m 118 |[39m [90m// 在 jsdom 环境下，MUI 输入控件/Portal 以及 Provider 副作用偶尔会触发[39m[0m
+
+      at console.Object.<anonymous>.console.warn (src/setupTests.ts:115:23)
+      at node_modules/@mui/material/Select/SelectInput.js:399:17
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26156:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26998:3)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at finishConcurrentRender (node_modules/react-dom/cjs/react-dom.development.js:26020:9)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25848:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at Object.<anonymous> (src/pages/HistoryPage/HistoryToolbar.test.tsx:9:11)
+
+  console.time
+    refreshWallets#1: 13 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+PASS src/components/DefaultWalletSelector.test.tsx (5.635 s)
+  DefaultWalletSelector
+    √ renders options from wallets and selects current (550 ms)
+
+  console.time
+    refreshWallets#1: 56 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    refreshWallets#1: 10 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+PASS src/pages/HistoryPage/HistoryToolbar.test.tsx (5.644 s)
+  HistoryToolbar
+    √ clicking Export CSV triggers handler (357 ms)
+
+  console.time
+    refreshWallets#1: 47 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.warn
+    MUI: You have provided an out-of-range value `all` for the select component.
+    Consider providing a value that matches one of the available options or ''.
+    The available values are `24h`, `7d`, `30d`.
+
+    [0m [90m 113 |[39m     [36mreturn[39m[33m;[39m
+     [90m 114 |[39m   }
+    [31m[1m>[22m[39m[90m 115 |[39m   [36mreturn[39m originalWarn[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                       [31m[1m^[22m[39m
+     [90m 116 |[39m }[33m;[39m
+     [90m 117 |[39m
+     [90m 118 |[39m [90m// 在 jsdom 环境下，MUI 输入控件/Portal 以及 Provider 副作用偶尔会触发[39m[0m
+
+      at console.Object.<anonymous>.console.warn (src/setupTests.ts:115:23)
+      at node_modules/@mui/material/Select/SelectInput.js:399:17
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26115:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26998:3)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at finishConcurrentRender (node_modules/react-dom/cjs/react-dom.development.js:26020:9)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25848:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at renderWithProvider (src/pages/HistoryPage/HistoryPage.test.tsx:8:40)
+      at Object.<anonymous> (src/pages/HistoryPage/HistoryPage.test.tsx:27:5)
+
+  console.warn
+    MUI: You have provided an out-of-range value `all` for the select component.
+    Consider providing a value that matches one of the available options or ''.
+    The available values are `24h`, `7d`, `30d`.
+
+    [0m [90m 113 |[39m     [36mreturn[39m[33m;[39m
+     [90m 114 |[39m   }
+    [31m[1m>[22m[39m[90m 115 |[39m   [36mreturn[39m originalWarn[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                       [31m[1m^[22m[39m
+     [90m 116 |[39m }[33m;[39m
+     [90m 117 |[39m
+     [90m 118 |[39m [90m// 在 jsdom 环境下，MUI 输入控件/Portal 以及 Provider 副作用偶尔会触发[39m[0m
+
+      at console.Object.<anonymous>.console.warn (src/setupTests.ts:115:23)
+      at node_modules/@mui/material/Select/SelectInput.js:399:17
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26156:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26998:3)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at finishConcurrentRender (node_modules/react-dom/cjs/react-dom.development.js:26020:9)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25848:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at renderWithProvider (src/pages/HistoryPage/HistoryPage.test.tsx:8:40)
+      at Object.<anonymous> (src/pages/HistoryPage/HistoryPage.test.tsx:27:5)
+
+  console.time
+    refreshWallets#1: 40 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+PASS src/pages/HistoryPage/HistoryTimelineItem.test.tsx (5.884 s)
+  HistoryTimelineItem
+    √ renders timestamp, amount with network symbol and status (153 ms)
+    √ shortened ids and addresses are shown (41 ms)
+    √ copy buttons call clipboard.writeText with correct values (224 ms)
+    √ external links point to correct explorer URLs (47 ms)
+
+  console.warn
+    MUI: You have provided an out-of-range value `all` for the select component.
+    Consider providing a value that matches one of the available options or ''.
+    The available values are `24h`, `7d`, `30d`.
+
+    [0m [90m 113 |[39m     [36mreturn[39m[33m;[39m
+     [90m 114 |[39m   }
+    [31m[1m>[22m[39m[90m 115 |[39m   [36mreturn[39m originalWarn[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                       [31m[1m^[22m[39m
+     [90m 116 |[39m }[33m;[39m
+     [90m 117 |[39m
+     [90m 118 |[39m [90m// 在 jsdom 环境下，MUI 输入控件/Portal 以及 Provider 副作用偶尔会触发[39m[0m
+
+      at console.Object.<anonymous>.console.warn (src/setupTests.ts:115:23)
+      at node_modules/@mui/material/Select/SelectInput.js:399:17
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26115:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26998:3)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at finishConcurrentRender (node_modules/react-dom/cjs/react-dom.development.js:26020:9)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25848:7)
+      at workLoop (node_modules/scheduler/cjs/scheduler.development.js:266:34)
+      at flushWork (node_modules/scheduler/cjs/scheduler.development.js:239:14)
+      at performWorkUntilDeadline (node_modules/scheduler/cjs/scheduler.development.js:533:21)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:516:19)
+
+  console.warn
+    MUI: You have provided an out-of-range value `all` for the select component.
+    Consider providing a value that matches one of the available options or ''.
+    The available values are `24h`, `7d`, `30d`.
+
+    [0m [90m 113 |[39m     [36mreturn[39m[33m;[39m
+     [90m 114 |[39m   }
+    [31m[1m>[22m[39m[90m 115 |[39m   [36mreturn[39m originalWarn[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                       [31m[1m^[22m[39m
+     [90m 116 |[39m }[33m;[39m
+     [90m 117 |[39m
+     [90m 118 |[39m [90m// 在 jsdom 环境下，MUI 输入控件/Portal 以及 Provider 副作用偶尔会触发[39m[0m
+
+      at console.Object.<anonymous>.console.warn (src/setupTests.ts:115:23)
+      at node_modules/@mui/material/Select/SelectInput.js:399:17
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26115:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at node_modules/react-dom/cjs/react-dom.development.js:25690:13
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:550:9
+
+  console.time
+    bridgeAssets: 38 ms
+
+      at handleBridgeAssets (src/pages/BridgePage/BridgePage.tsx:163:15)
+
+PASS src/pages/BridgePage/BridgePage.test.tsx (6.421 s)
+  BridgePage
+    √ submits valid bridge request and shows success (1048 ms)
+
+PASS src/pages/HistoryPage/HistoryPage.test.tsx (6.486 s)
+  HistoryPage
+    √ loads history, refreshes and exports CSV (968 ms)
+
+PASS src/pages/SettingsPage/SettingsPage.test.tsx (6.652 s)
+  SettingsPage
+    √ saves API config and tests connectivity (2749 ms)
+
+  console.time
+    sendTransaction: 21 ms
+
+      at performSend (src/pages/SendPage/SendPage.tsx:116:15)
+
+  console.time
+    sendTransaction: 203 ms
+
+      at performSend (src/pages/SendPage/SendPage.tsx:116:15)
+
+PASS src/pages/SendPage/SendPage.perf.test.tsx (7.101 s)
+  SendPage performance
+    √ send flow completes under threshold (3304 ms)
+
+  console.time
+    refreshWallets#1: 3 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+PASS src/pages/SendPage/SendPage.test.tsx (7.226 s)
+  SendPage performance
+    √ prevents duplicate submissions and shows success (1593 ms)
+    √ validates form inputs (267 ms)
+
+  console.time
+    fetchOverviewBalance:wallet-1: 12 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#1: 45 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 20 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#1: 52 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 3 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 2 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#1: 78 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    refreshWallets#1: 23 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+PASS src/App.test.tsx (11.123 s)
+  √ App renders without crashing (240 ms)
+
+  console.time
+    fetchOverviewBalance:wallet-1: 6 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#1: 6 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 1 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#1: 43 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.error
+    MUI: The modal content node does not accept focus.
+    For the benefit of assistive technologies, the tabIndex of the node is being set to "-1".
+
+    [0m [90m 125 |[39m     [36mreturn[39m[33m;[39m
+     [90m 126 |[39m   }
+    [31m[1m>[22m[39m[90m 127 |[39m   [36mreturn[39m originalError[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                        [31m[1m^[22m[39m
+     [90m 128 |[39m }[33m;[39m
+     [90m 129 |[39m[0m
+
+      at console.Object.<anonymous>.console.error (src/setupTests.ts:127:24)
+      at node_modules/@mui/material/Unstable_TrapFocus/FocusTrap.js:124:19
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26156:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at node_modules/react-dom/cjs/react-dom.development.js:25690:13
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:550:9
+
+  console.error
+    MUI: The modal content node does not accept focus.
+    For the benefit of assistive technologies, the tabIndex of the node is being set to "-1".
+
+    [0m [90m 125 |[39m     [36mreturn[39m[33m;[39m
+     [90m 126 |[39m   }
+    [31m[1m>[22m[39m[90m 127 |[39m   [36mreturn[39m originalError[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                        [31m[1m^[22m[39m
+     [90m 128 |[39m }[33m;[39m
+     [90m 129 |[39m[0m
+
+      at console.Object.<anonymous>.console.error (src/setupTests.ts:127:24)
+      at node_modules/@mui/material/Unstable_TrapFocus/FocusTrap.js:124:19
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26156:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at node_modules/react-dom/cjs/react-dom.development.js:25690:13
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:550:9
+
+PASS src/components/Layout/AppLayout.navigation.test.tsx (11.537 s)
+  AppLayout side menu navigation
+    √ navigates to pages via side menu (503 ms)
+
+PASS src/App.navigation.test.tsx (11.518 s)
+  App navigation and menu buttons
+    √ navigates via side menu to pages (538 ms)
+
+  console.time
+    fetchOverviewBalance:wallet-1: 2 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#1: 3 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.error
+    MUI: The modal content node does not accept focus.
+    For the benefit of assistive technologies, the tabIndex of the node is being set to "-1".
+
+    [0m [90m 125 |[39m     [36mreturn[39m[33m;[39m
+     [90m 126 |[39m   }
+    [31m[1m>[22m[39m[90m 127 |[39m   [36mreturn[39m originalError[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                        [31m[1m^[22m[39m
+     [90m 128 |[39m }[33m;[39m
+     [90m 129 |[39m[0m
+
+      at console.Object.<anonymous>.console.error (src/setupTests.ts:127:24)
+      at node_modules/@mui/material/Unstable_TrapFocus/FocusTrap.js:124:19
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26156:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at node_modules/react-dom/cjs/react-dom.development.js:25690:13
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:550:9
+
+  console.time
+    refreshWallets#2: 0 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    fetchOverviewBalance:wallet2: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 10 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#3: 58 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    handleRefreshBalance: 59 ms
+
+      at handleRefreshBalance (src/pages/WalletPage/WalletPage.tsx:222:15)
+
+  console.time
+    fetchOverviewBalance:wallet-1: 2 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#4: 1 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 1 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+PASS src/pages/WalletPage/WalletPage.test.tsx (11.818 s)
+  WalletPage
+    √ renders, creates wallet, refreshes balance (1005 ms)
+
+  console.time
+    fetchOverviewBalance:wallet-1: 3 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#1: 3 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.error
+    MUI: The modal content node does not accept focus.
+    For the benefit of assistive technologies, the tabIndex of the node is being set to "-1".
+
+    [0m [90m 125 |[39m     [36mreturn[39m[33m;[39m
+     [90m 126 |[39m   }
+    [31m[1m>[22m[39m[90m 127 |[39m   [36mreturn[39m originalError[33m.[39mapply(console[33m,[39m args [36mas[39m any)[33m;[39m
+     [90m     |[39m                        [31m[1m^[22m[39m
+     [90m 128 |[39m }[33m;[39m
+     [90m 129 |[39m[0m
+
+      at console.Object.<anonymous>.console.error (src/setupTests.ts:127:24)
+      at node_modules/@mui/material/Unstable_TrapFocus/FocusTrap.js:124:19
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26156:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at node_modules/react-dom/cjs/react-dom.development.js:25690:13
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:550:9
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 2 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    refreshWallets#1: 2 ms
+
+      at src/context/WalletContext.tsx:94:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 0 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 1 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+  console.time
+    fetchOverviewBalance:wallet-1: 1 ms
+
+      at src/pages/WalletPage/WalletPage.tsx:139:15
+
+PASS src/pages/WalletPage/WalletPage.errors.test.tsx (12.4 s)
+  WalletPage error handling
+    √ shows error when wallet list fails on mount (213 ms)
+    √ create wallet validation: empty name shows error (393 ms)
+    √ create wallet validation: invalid characters show error (395 ms)
+    √ create wallet API failure shows server error (314 ms)
+    √ delete wallet failure shows error (134 ms)
+
+Test Suites: 1 skipped, 19 passed, 19 of 20 total
+Tests:       1 skipped, 54 passed, 55 total
+Snapshots:   0 total
+Time:        14.577 s
+Ran all test suites.

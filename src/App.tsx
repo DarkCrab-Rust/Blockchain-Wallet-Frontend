@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline, Box, LinearProgress } from '@mui/material';
 import AppLayout from './components/Layout/AppLayout';
-import WalletPage from './pages/WalletPage/WalletPage';
-import SendPage from './pages/SendPage/SendPage';
-import HistoryPage from './pages/HistoryPage/HistoryPage';
-import BridgePage from './pages/BridgePage/BridgePage';
-import SettingsPage from './pages/SettingsPage/SettingsPage';
+import ErrorBoundary from './components/ErrorBoundary';
 import { WalletProvider } from './context/WalletContext';
+import { HardwareProvider } from './context/HardwareContext';
 import { apiRuntime } from './services/api';
 import { safeLocalStorage } from './utils/safeLocalStorage';
+import { normalizeApiUrl } from './utils/url';
+import { Toaster } from 'react-hot-toast';
 
 // 创建现代化主题 - 参考 blockchain.com 设计风格
 const theme = createTheme({
@@ -87,39 +86,95 @@ const theme = createTheme({
         },
       },
     },
+    // 全局禁用波纹，减少交互抖动
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+      },
+    },
+    MuiIconButton: {
+      defaultProps: {
+        disableRipple: true,
+      },
+    },
+    MuiSwitch: {
+      defaultProps: {
+        disableRipple: true,
+      },
+    },
+    // Tooltip 全局延迟与禁用交互，减少 hover 抖动
+    MuiTooltip: {
+      defaultProps: {
+        enterDelay: 400,
+        leaveDelay: 0,
+        disableInteractive: true,
+      },
+    },
+    // Drawer 打开/关闭过渡简化，减少移动端抽屉动画带来的抖动
+    MuiDrawer: {
+      defaultProps: {
+        transitionDuration: 0,
+      },
+    },
   },
 });
 
+// 替换为懒加载路由组件
+const WalletPage = React.lazy(() => import('./pages/WalletPage/WalletPage'));
+const SendPage = React.lazy(() => import('./pages/SendPage/SendPage'));
+const HistoryPage = React.lazy(() => import('./pages/HistoryPage/HistoryPage'));
+const BridgePage = React.lazy(() => import('./pages/BridgePage/BridgePage'));
+const SettingsPage = React.lazy(() => import('./pages/SettingsPage/SettingsPage'));
+
 function App() {
   useEffect(() => {
-    const defaultUrl = 'http://localhost:8888';
-    const defaultKey = 'testnet_api_key_51a69b550a2c4149';
+    const isDev = process.env.NODE_ENV === 'development';
     const hasUrl = !!safeLocalStorage.getItem('api_url');
-    const hasKey = !!safeLocalStorage.getItem('api_key');
+    const currentKey = safeLocalStorage.getItem('api_key');
+    const envKey = (process.env.REACT_APP_API_KEY || '').trim();
+    const envUrl = (process.env.REACT_APP_API_URL || '').trim();
+
     if (!hasUrl) {
-      safeLocalStorage.setItem('api_url', defaultUrl);
-      apiRuntime.setBaseUrl(defaultUrl);
+      // 优先使用环境变量中的 API URL，统一确保包含 '/api'
+      const normalized = normalizeApiUrl(envUrl) ?? '/api';
+      apiRuntime.setBaseUrl(normalized);
+    } else {
+      // 若存在用户配置，优先使用该配置
+      apiRuntime.setBaseUrl(safeLocalStorage.getItem('api_url')!);
     }
-    if (!hasKey) {
-      safeLocalStorage.setItem('api_key', defaultKey);
+
+    // 开发环境：默认使用环境变量中的 API Key；若已是占位符则覆盖
+    if (isDev) {
+      if (!currentKey) {
+        safeLocalStorage.setItem('api_key', envKey || 'test_api_key');
+      } else if (currentKey === 'test_api_key' && envKey && envKey !== 'test_api_key') {
+        safeLocalStorage.setItem('api_key', envKey);
+      }
     }
   }, []);
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <Toaster position="bottom-center" gutter={8} toastOptions={{ duration: 3500 }} />
       <Router>
-        <WalletProvider>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<WalletPage />} />
-              <Route path="/send" element={<SendPage />} />
-              <Route path="/history" element={<HistoryPage />} />
-              <Route path="/bridge" element={<BridgePage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-            </Routes>
-          </AppLayout>
-        </WalletProvider>
+        <HardwareProvider>
+          <WalletProvider>
+            <AppLayout>
+              <ErrorBoundary>
+                <Suspense fallback={<Box sx={{ p: 2 }}><LinearProgress /></Box>}>
+                  <Routes>
+                    <Route path="/" element={<WalletPage />} />
+                    <Route path="/send" element={<SendPage />} />
+                    <Route path="/history" element={<HistoryPage />} />
+                    <Route path="/bridge" element={<BridgePage />} />
+                    <Route path="/settings" element={<SettingsPage />} />
+                  </Routes>
+                </Suspense>
+              </ErrorBoundary>
+            </AppLayout>
+          </WalletProvider>
+        </HardwareProvider>
       </Router>
     </ThemeProvider>
   );

@@ -10,6 +10,8 @@ import HistoryToolbar from './HistoryToolbar';
 import HistoryWalletSelector from './HistoryWalletSelector';
 import HistoryTimelineItem from './HistoryTimelineItem';
 import { safeLocalStorage } from '../../utils/safeLocalStorage';
+import MockModeBanner from '../../components/MockModeBanner';
+import { eventBus } from '../../utils/eventBus';
 
 const HistoryPage: React.FC = () => {
   const [wallets, setWallets] = useState<Wallet[]>([]);
@@ -26,6 +28,10 @@ const HistoryPage: React.FC = () => {
     const n = saved ? parseInt(saved, 10) : 20;
     return isNaN(n) ? 20 : n;
   });
+  const [pageVisible, setPageVisible] = useState<boolean>(() => !document.hidden);
+  const lastFetchKeyRef = React.useRef<string>('');
+  const refreshDebounceRef = React.useRef<number | undefined>(undefined);
+  const historyAbortRef = React.useRef<AbortController | null>(null);
 
 
 
@@ -33,19 +39,34 @@ const HistoryPage: React.FC = () => {
   const [timeRange, setTimeRange] = useState<'all' | '24h' | '7d' | '30d'>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'confirmed' | 'pending' | 'failed'>('all');
 
+  // 可见性变化时更新状态
+  useEffect(() => {
+    const onVisibility = () => setPageVisible(!document.hidden);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, []);
+
   // 获取钱包列表
   useEffect(() => {
     const fetchWallets = async () => {
       try {
         const list = await walletService.listWallets();
-        setWallets(list);
+        const safeList = Array.isArray(list) ? list : [];
+        setWallets(safeList);
         if (currentWallet) {
           setSelectedWallet(currentWallet);
-        } else if (list.length > 0) {
-          setSelectedWallet(list[0].name);
+        } else if (safeList.length > 0) {
+          setSelectedWallet(safeList[0].name);
         }
       } catch (err) {
-        console.error(err);
+        eventBus.emitApiError({
+          title: '获取钱包列表失败',
+          message: (err as any)?.message || '无法获取钱包列表',
+          category: 'network',
+          endpoint: 'wallets.list',
+          friendlyMessage: '无法获取钱包列表，历史记录无法展示',
+          userAction: '请检查后端服务与 API 配置',
+        });
       }
     };
     fetchWallets();
@@ -54,17 +75,36 @@ const HistoryPage: React.FC = () => {
   // 拉取历史数据
   const fetchHistory = useCallback(async () => {
     if (!selectedWallet) return;
+    if (loading) return; // 防止并发重复请求
+
+    // 若存在上次的请求，先主动取消
+    if (historyAbortRef.current) {
+      try { historyAbortRef.current.abort(); } catch {}
+    }
+    const controller = new AbortController();
+    historyAbortRef.current = controller;
+
+    const key = `${selectedWallet}|${currentNetwork}|${Date.now()}`;
+    lastFetchKeyRef.current = key;
     setLoading(true);
     try {
-      const res = await walletService.getTransactionHistory(selectedWallet, { network: currentNetwork });
+      const res = await walletService.getTransactionHistory(selectedWallet, currentNetwork, { signal: controller.signal });
+      // 若期间筛选或网络变更导致 key 变化，忽略旧响应
+      if (lastFetchKeyRef.current !== key) return;
       setHistory(res.transactions);
       setError(null);
     } catch (e: any) {
-      setError(e?.message || '获取交易历史失败');
+      if (lastFetchKeyRef.current !== key) return;
+      const code = e?.code || e?.name;
+      const msg = e?.message || '';
+      const isCanceled = code === 'ERR_CANCELED' || code === 'CanceledError' || msg.includes('ERR_ABORTED') || msg.toLowerCase().includes('aborted') || msg.toLowerCase().includes('canceled');
+      if (!isCanceled) {
+        setError(msg || '获取交易历史失败');
+      }
     } finally {
-      setLoading(false);
+      if (lastFetchKeyRef.current === key) setLoading(false);
     }
-  }, [selectedWallet, currentNetwork]);
+  }, [selectedWallet, currentNetwork, loading]);
 
   // 自动刷新持久化与轮询
   useEffect(() => {
@@ -74,21 +114,43 @@ const HistoryPage: React.FC = () => {
     fetchHistory();
   }, [fetchHistory]);
   useEffect(() => {
-    if (!autoRefresh) return;
+    if (!autoRefresh || !pageVisible) return;
     const id = setInterval(() => {
-      fetchHistory();
+      // 仅在未加载中且页面可见时触发
+      if (!loading) {
+        fetchHistory();
+      }
     }, 60000);
     return () => clearInterval(id);
-  }, [autoRefresh, fetchHistory]);
-
-  React.useEffect(() => {
-    safeLocalStorage.setItem("history_page_size", String(pageSize));
-  }, [pageSize]);
+  }, [autoRefresh, pageVisible, fetchHistory, loading]);
 
   React.useEffect(() => {
     // 当筛选条件变化时，重置到第一页
     setPage(1);
   }, [timeRange, statusFilter, searchQuery, currentNetwork, selectedWallet]);
+
+  // 刷新按钮轻微防抖，避免误触造成瞬时多次请求
+  const handleRefreshClick = React.useCallback(() => {
+    if (refreshDebounceRef.current) {
+      clearTimeout(refreshDebounceRef.current);
+    }
+    refreshDebounceRef.current = window.setTimeout(() => {
+      fetchHistory();
+    }, 250);
+  }, [fetchHistory]);
+
+  // 组件卸载时清理可能残留的防抖与取消控制器
+  useEffect(() => {
+    return () => {
+      if (refreshDebounceRef.current) {
+        clearTimeout(refreshDebounceRef.current);
+      }
+      if (historyAbortRef.current) {
+        try { historyAbortRef.current.abort(); } catch {}
+        historyAbortRef.current = null;
+      }
+    };
+  }, []);
 
   const displayHistory = React.useMemo(() => {
     let filtered = history;
@@ -149,14 +211,15 @@ const HistoryPage: React.FC = () => {
     const ts = new Date().toISOString().replace(/[:]/g, '-');
     a.href = url;
     a.download = `history_${currentNetwork}_${ts}.csv`;
-    document.body.appendChild(a);
-    a.click();
+    // 不再依赖 appendChild，直接触发点击以兼容测试环境
+    try { a.click(); } catch {}
     URL.revokeObjectURL(url);
-    a.remove();
   };
 
   return (
     <Box>
+      <MockModeBanner dense showSettingsLink message="Mock 后端已启用：交易历史为本地模拟数据" />
+
       {error && (
         <Alert
           severity="error"
@@ -173,7 +236,7 @@ const HistoryPage: React.FC = () => {
       <HistoryToolbar
         currentNetwork={currentNetwork}
         onChangeNetwork={setCurrentNetwork}
-        fetchHistory={fetchHistory}
+        fetchHistory={handleRefreshClick}
         loading={loading}
         autoRefresh={autoRefresh}
         onToggleAutoRefresh={setAutoRefresh}

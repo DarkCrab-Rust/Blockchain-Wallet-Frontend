@@ -17,14 +17,10 @@ import Grid from '@mui/material/GridLegacy';
 import { walletService } from '../../services/api';
 import { Wallet } from '../../types';
 import { useWalletContext } from '../../context/WalletContext';
+import { getAvailableNetworks } from '../../utils/networks';
+import MockModeBanner from '../../components/MockModeBanner';
+import { eventBus } from '../../utils/eventBus';
 
-// 将可用链常量移到组件外以避免依赖警告
-const AVAILABLE_CHAINS = [
-  { id: 'eth', name: '以太坊' },
-  { id: 'bsc', name: '币安智能链' },
-  { id: 'solana', name: 'Solana' },
-  { id: 'polygon', name: 'Polygon' }
-];
 
 const BridgePage: React.FC = () => {
   const [wallets, setWallets] = useState<Wallet[]>([]);
@@ -43,20 +39,30 @@ const BridgePage: React.FC = () => {
   const [sourceBalance, setSourceBalance] = useState<number | null>(null);
   const [balanceLoading, setBalanceLoading] = useState(false);
 
+  const networks = getAvailableNetworks().map((n) => ({ id: n.id, name: n.name }));
+
   // 获取钱包列表
   useEffect(() => {
     const fetchWallets = async () => {
       try {
         setFetchingWallets(true);
         const data = await walletService.listWallets();
-        setWallets(data);
+        const list = Array.isArray(data) ? data : [];
+        setWallets(list);
         if (currentWallet) {
           setSelectedWallet(currentWallet);
-        } else if (data.length > 0) {
-          setSelectedWallet(data[0].name);
+        } else if (list.length > 0) {
+          setSelectedWallet(list[0].name);
         }
       } catch (err) {
-        console.error('获取钱包列表失败:', err);
+        eventBus.emitApiError({
+          title: '获取钱包列表失败',
+          message: (err as any)?.message || '获取钱包列表失败，请检查API连接',
+          category: 'network',
+          endpoint: 'wallets.list',
+          friendlyMessage: '获取钱包列表失败，请检查API连接',
+          userAction: '请启动后端或检查设置中的 API 配置',
+        });
         setError('获取钱包列表失败，请检查API连接');
       } finally {
         setFetchingWallets(false);
@@ -142,7 +148,15 @@ const BridgePage: React.FC = () => {
       setSuccess('跨链请求已提交，请等待处理！');
       setAmount('');
     } catch (err: any) {
-      console.error('跨链请求失败:', err);
+      eventBus.emitApiError({
+        title: '跨链请求失败',
+        message: err?.message || '跨链请求失败',
+        category: 'http_4xx',
+        endpoint: 'bridge.assets',
+        friendlyMessage: err?.response?.data?.error || '跨链请求失败，请稍后再试',
+        userAction: '请检查余额与网络选择是否正确后重试',
+        errorContext: err,
+      });
       setError(err.response?.data?.error || '跨链请求失败，请稍后再试');
     } finally {
       setLoading(false);
@@ -155,6 +169,7 @@ const BridgePage: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         跨链桥
       </Typography>
+      <MockModeBanner dense showSettingsLink message="Mock 后端已启用：跨链操作为本地模拟数据" />
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
@@ -174,21 +189,23 @@ const BridgePage: React.FC = () => {
             <Box display="flex" justifyContent="center" my={3}>
               <CircularProgress />
             </Box>
-          ) : wallets.length === 0 ? (
+          ) : (Array.isArray(wallets) ? wallets.length === 0 : true) ? (
             <Alert severity="info">没有可用的钱包，请先创建一个钱包</Alert>
           ) : (
             <form onSubmit={handleBridgeAssets}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <InputLabel>选择钱包</InputLabel>
+                    <InputLabel id="bridge-wallet-select-label">选择钱包</InputLabel>
                     <Select
+                      labelId="bridge-wallet-select-label"
+                      id="bridge-wallet-select"
                       value={selectedWallet}
                       onChange={(e) => setSelectedWallet(e.target.value)}
                       label="选择钱包"
                       required
                     >
-                      {wallets.map((wallet) => (
+                      {(Array.isArray(wallets) ? wallets : []).map((wallet) => (
                         <MenuItem key={wallet.id} value={wallet.name}>
                           {wallet.name}
                         </MenuItem>
@@ -199,14 +216,16 @@ const BridgePage: React.FC = () => {
 
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <InputLabel>源网络</InputLabel>
+                    <InputLabel id="source-chain-select-label">源网络</InputLabel>
                     <Select
+                      labelId="source-chain-select-label"
+                      id="source-chain-select"
                       value={sourceChain}
                       onChange={(e) => setSourceChain(e.target.value)}
                       label="源网络"
                       required
                     >
-                      {AVAILABLE_CHAINS.map((chain) => (
+                      {networks.map((chain) => (
                         <MenuItem key={chain.id} value={chain.id}>
                           {chain.name}
                         </MenuItem>
@@ -217,14 +236,16 @@ const BridgePage: React.FC = () => {
 
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <InputLabel>目标链</InputLabel>
+                    <InputLabel id="target-chain-select-label">目标链</InputLabel>
                     <Select
+                      labelId="target-chain-select-label"
+                      id="target-chain-select"
                       value={targetChain}
                       onChange={(e) => setTargetChain(e.target.value)}
                       label="目标链"
                       required
                     >
-                      {AVAILABLE_CHAINS.map((chain) => (
+                      {networks.map((chain) => (
                         <MenuItem key={chain.id} value={chain.id}>
                           {chain.name}
                         </MenuItem>
@@ -253,7 +274,9 @@ const BridgePage: React.FC = () => {
 
                 <Grid item xs={12}>
                   <TextField
+                    id="bridge-amount"
                     label="金额"
+                    InputLabelProps={{ htmlFor: 'bridge-amount' }}
                     fullWidth
                     type="number"
                     value={amount}

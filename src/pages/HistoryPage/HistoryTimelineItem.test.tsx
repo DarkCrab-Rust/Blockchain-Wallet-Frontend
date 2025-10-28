@@ -50,10 +50,10 @@ describe('HistoryTimelineItem', () => {
     // 旧版 user-event 不支持 setup，直接使用全局实例
     const tx = makeTx();
     const writeText = setupClipboardMock();
-    const { container } = render(<HistoryTimelineItem tx={tx} network="eth" />);
+    render(<HistoryTimelineItem tx={tx} network="eth" />);
 
     // 第一个复制按钮是交易ID的复制
-    const copyButtons = container.querySelectorAll('button');
+    const copyButtons = screen.getAllByRole('button');
     expect(copyButtons.length).toBeGreaterThanOrEqual(3);
     await userEvent.click(copyButtons[0]);
     expect(writeText).toHaveBeenCalledWith(tx.id);
@@ -69,8 +69,8 @@ describe('HistoryTimelineItem', () => {
 
   test('external links point to correct explorer URLs', () => {
     const tx = makeTx();
-    const { container } = render(<HistoryTimelineItem tx={tx} network="eth" />);
-    const links = container.querySelectorAll('a[href]');
+    render(<HistoryTimelineItem tx={tx} network="eth" />);
+    const links = screen.getAllByRole('link');
     // 预期有3个外链：tx、from、to
     expect(links.length).toBe(3);
     // 验证以 etherscan 前缀

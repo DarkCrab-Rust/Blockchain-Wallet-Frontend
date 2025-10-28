@@ -15,6 +15,7 @@ export interface SendTransactionRequest {
   to_address: string;
   amount: number;
   fee?: number;
+  clientRequestId?: string;
 }
 
 export interface Transaction {
@@ -76,3 +77,13 @@ export type ApiResult<T> = {
   data?: T;
   error?: ErrorResponse;
 };
+
+// 追加：系统与API配置类型
+export interface ApiConfig {
+  baseUrl: string;
+  apiKey?: string;
+}
+
+export interface SystemInfo {
+  version: string;
+}

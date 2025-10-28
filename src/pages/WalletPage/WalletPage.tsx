@@ -24,6 +24,9 @@ import { Wallet } from '../../types';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { useWalletContext } from '../../context/WalletContext';
+import { getAvailableNetworks } from '../../utils/networks';
+import { eventBus } from '../../utils/eventBus';
+import MockModeBanner from '../../components/MockModeBanner';
 
 const WalletPage: React.FC = () => {
   const [wallets, setWallets] = useState<Wallet[]>([]);
@@ -41,7 +44,7 @@ const WalletPage: React.FC = () => {
   // 移除本地 network 状态，改用全局网络
   // const [network, setNetwork] = useState<string>('eth');
   // 新增：网络符号映射
-  const NETWORK_LABELS: Record<string, string> = { eth: 'ETH', solana: 'SOL', polygon: 'MATIC', bsc: 'BNB' };
+  const NETWORK_LABELS: Record<string, string> = { eth: 'ETH', solana: 'SOL', polygon: 'MATIC', bsc: 'BNB', btc: 'BTC' };
 
   // 动画数字组件（无额外依赖）
   // const AnimatedNumber: React.FC<{ value: number | null; unit?: string; duration?: number }> = ({ value, unit = 'ETH', duration = 800 }) => {
@@ -81,7 +84,14 @@ const WalletPage: React.FC = () => {
       setWallets(data);
       setError(null);
     } catch (err) {
-      console.error('获取钱包列表失败:', err);
+      eventBus.emitApiError({
+        title: '获取钱包列表失败',
+        message: (err as any)?.message || '获取钱包列表失败，请检查API连接',
+        category: 'network',
+        endpoint: 'wallets.list',
+        friendlyMessage: '获取钱包列表失败，请检查API连接',
+        userAction: '请检查后端服务是否启动，或到设置页确认 API 地址与密钥',
+      });
       setError('获取钱包列表失败，请检查API连接');
     } finally {
       setLoading(false);
@@ -115,7 +125,14 @@ const WalletPage: React.FC = () => {
       }
       setBalanceHistory(series);
     } catch (e) {
-      console.error('获取余额失败:', e);
+      eventBus.emitApiError({
+        title: '获取余额失败',
+        message: (e as any)?.message || '无法获取余额',
+        category: 'network',
+        endpoint: 'wallets.balance',
+        friendlyMessage: '无法获取余额，已为你隐藏该数据',
+        userAction: '请稍后重试，或检查网络与后端服务',
+      });
       setOverviewBalance(null);
       setBalanceHistory([]);
     } finally {
@@ -147,7 +164,15 @@ const WalletPage: React.FC = () => {
       await refreshWallets();
       await fetchOverviewBalance(newWalletName);
     } catch (err: any) {
-      console.error('创建钱包失败:', err);
+      eventBus.emitApiError({
+        title: '创建钱包失败',
+        message: err?.message || '创建钱包失败',
+        category: 'http_4xx',
+        endpoint: 'wallets.create',
+        friendlyMessage: err?.response?.data?.error || '创建钱包失败',
+        userAction: '请检查钱包名称是否有效或稍后再试',
+        errorContext: err,
+      });
       setError(err.response?.data?.error || '创建钱包失败');
     } finally {
       setCreating(false);
@@ -162,7 +187,14 @@ const WalletPage: React.FC = () => {
         await refreshWallets();
          await fetchOverviewBalance(currentWallet ?? ctxWallets[0]?.name);
       } catch (err) {
-        console.error('删除钱包失败:', err);
+        eventBus.emitApiError({
+          title: '删除钱包失败',
+          message: (err as any)?.message || '删除钱包失败',
+          category: 'http_4xx',
+          endpoint: 'wallets.delete',
+          friendlyMessage: '删除钱包失败',
+          userAction: '请稍后重试',
+        });
         setError('删除钱包失败');
       }
     }
@@ -176,7 +208,14 @@ const WalletPage: React.FC = () => {
       await refreshWallets();
       await fetchOverviewBalance(currentWallet ?? ctxWallets[0]?.name);
     } catch (err) {
-      console.error('刷新余额失败:', err);
+      eventBus.emitApiError({
+        title: '刷新余额失败',
+        message: (err as any)?.message || '刷新余额失败',
+        category: 'network',
+        endpoint: 'wallets.refresh',
+        friendlyMessage: '刷新余额失败，请稍后重试',
+        userAction: '请检查网络与后端服务状态',
+      });
       setError('刷新余额失败，请稍后重试');
     } finally {
       setRefreshing(false);
@@ -213,10 +252,9 @@ const WalletPage: React.FC = () => {
             onChange={(e) => setCurrentNetwork(e.target.value)}
             sx={{ minWidth: 120 }}
           >
-            <MenuItem value="eth">Ethereum</MenuItem>
-            <MenuItem value="solana">Solana</MenuItem>
-            <MenuItem value="polygon">Polygon</MenuItem>
-            <MenuItem value="bsc">BSC</MenuItem>
+            {getAvailableNetworks().map((n) => (
+              <MenuItem key={n.id} value={n.id}>{n.name}</MenuItem>
+            ))}
           </TextField>
           <Button 
             variant="contained"
@@ -235,6 +273,7 @@ const WalletPage: React.FC = () => {
             {refreshing ? '刷新中...' : '刷新余额'}
           </Button>
         </Box>
+      <MockModeBanner dense showSettingsLink message="Mock 后端已启用：钱包数据为本地模拟" />
       </Box>
 
       {/* 资产总览与余额趋势 - 现代化设计 */}

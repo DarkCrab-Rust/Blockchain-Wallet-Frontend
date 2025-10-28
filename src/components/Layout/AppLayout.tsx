@@ -5,17 +5,8 @@ import {
   CssBaseline, 
   Drawer, 
   IconButton, 
-  List, 
-  ListItem, 
-  ListItemButton, 
-  ListItemIcon, 
-  ListItemText, 
   Toolbar, 
-  Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem 
+  Typography
 } from '@mui/material';
 import { 
   Menu as MenuIcon, 
@@ -26,8 +17,22 @@ import {
   Settings,
   Bolt
 } from '@mui/icons-material';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useWalletContext } from '../../context/WalletContext';
+
+import { useFeatureFlags } from '../../hooks/useFeatureFlags';
+import { setFeatureFlag } from '../../utils/featureFlags';
+// 移除未使用的 MUI 切换组件与 API 服务导入
+// import { FormControlLabel, Switch } from '@mui/material';
+// import { systemService } from '../../services/api';
+
+import ApiStatusIndicator from '../ApiStatusIndicator';
+import SidebarMenu from './SidebarMenu';
+import WalletSwitcher from '../WalletSwitcher';
+import FeatureToggle from '../FeatureToggle';
+import { useApiStatus } from '../../hooks/useApiStatus';
+import { useApiErrorAggregator } from '../../hooks/useApiErrorAggregator';
+import { eventBus } from '../../utils/eventBus';
 
 const drawerWidth = 240;
 
@@ -47,74 +52,30 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const location = useLocation();
   const { wallets, currentWallet, setCurrentWallet } = useWalletContext();
+  // const [snackOpen, setSnackOpen] = React.useState(false);
+  // const [snackMsg] = React.useState<string>('');
+  // const [snackSeverity] = React.useState<'error' | 'warning' | 'info'>('error');
+  // const navigate = useNavigate();
+  const flags = useFeatureFlags();
+  const { status: apiStatus, refresh: check } = useApiStatus(flags.useMockBackend);
+  // 错误聚合与通知（Hook 内部管理 toast）
+  useApiErrorAggregator();
+
+  // 配置更新后自动触发一次状态重检（事件驱动，避免双向依赖）
+  React.useEffect(() => {
+    const off = eventBus.onApiConfigUpdated(() => {
+      check();
+    });
+    return () => off();
+  }, [check]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const drawer = (
-    <div>
-      <Toolbar sx={{ 
-        background: 'linear-gradient(135deg, #121D33 0%, #1E293B 100%)',
-        color: 'white',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-      }}>
-        <Typography variant="h6" noWrap component="div" sx={{ 
-          fontWeight: 700,
-          background: 'linear-gradient(135deg, #00D4AA 0%, #33DDBB 100%)',
-          backgroundClip: 'text',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}>
-          🔐 SecureWallet
-        </Typography>
-      </Toolbar>
-      <List sx={{ pt: 2, px: 1 }}>
-        {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ mb: 1 }}>
-            <ListItemButton 
-              component={Link} 
-              to={item.path}
-              selected={location.pathname === item.path}
-              sx={{
-                borderRadius: 2,
-                mx: 1,
-                '&.Mui-selected': {
-                  background: 'linear-gradient(135deg, #00D4AA 0%, #33DDBB 100%)',
-                  color: 'white',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #00A085 0%, #00D4AA 100%)',
-                  },
-                  '& .MuiListItemIcon-root': {
-                    color: 'white',
-                  },
-                },
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 212, 170, 0.08)',
-                },
-              }}
-            >
-              <ListItemIcon sx={{ 
-                minWidth: 40,
-                color: location.pathname === item.path ? 'white' : '#64748B'
-              }}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText 
-                primary={item.text} 
-                sx={{ 
-                  '& .MuiTypography-root': { 
-                    fontWeight: location.pathname === item.path ? 600 : 500,
-                    fontSize: '0.95rem'
-                  } 
-                }} 
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
+  const drawer = React.useMemo(() => (
+    <SidebarMenu items={menuItems} currentPath={location.pathname} />
+  ), [location.pathname]);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -161,48 +122,19 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             </Typography>
           </Box>
           {/* 钱包快速切换下拉 */}
-          <FormControl 
-            size="small" 
-            sx={{ 
-              minWidth: 180,
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: 2,
-                '& fieldset': {
-                  borderColor: 'rgba(255, 255, 255, 0.3)',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'rgba(255, 255, 255, 0.5)',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#00D4AA',
-                },
-              },
-              '& .MuiInputLabel-root': {
-                color: 'rgba(255, 255, 255, 0.7)',
-                '&.Mui-focused': {
-                  color: '#00D4AA',
-                },
-              },
-              '& .MuiSelect-select': {
-                color: 'white',
-              },
-              '& .MuiSelect-icon': {
-                color: 'rgba(255, 255, 255, 0.7)',
-              },
-            }}
-          >
-            <InputLabel>当前钱包</InputLabel>
-            <Select
-              value={currentWallet || ''}
-              label="当前钱包"
-              onChange={(e) => setCurrentWallet(e.target.value || null)}
-            >
-              {wallets.map((w) => (
-                <MenuItem key={w.id} value={w.name}>{w.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <WalletSwitcher wallets={wallets || []} currentWallet={currentWallet} onChange={setCurrentWallet} />
+
+          {/* API 状态指示器 */}
+          <ApiStatusIndicator status={apiStatus} onRefresh={check} />
+
+          <FeatureToggle 
+            label="Mock 模式" 
+            checked={flags.useMockBackend} 
+            onChange={(checked) => setFeatureFlag('mock', checked)} 
+            tooltipTitle="Mock 模式快捷开关"
+            ariaLabel="切换 Mock 模式"
+          />
+          
         </Toolbar>
       </AppBar>
       <Box
@@ -252,6 +184,15 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         <Toolbar />
         {children}
       </Box>
+      {/**
+      <Snackbar open={snackOpen} autoHideDuration={4000} onClose={() => setSnackOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert severity={snackSeverity} onClose={() => setSnackOpen(false)} sx={{ width: '100%' }}
+          action={<Button color="inherit" size="small" onClick={() => navigate('/settings')}>去设置</Button>}>
+          {snackMsg || '发生错误'}
+        </Alert>
+      </Snackbar>
+      */}
     </Box>
   );
 };

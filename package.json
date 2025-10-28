@@ -10,7 +10,7 @@
     "@mui/material": "^7.3.4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
@@ -20,9 +20,11 @@
     "ethers": "^6.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.6.0",
     "react-router-dom": "^6.14.2",
     "react-scripts": "5.0.1",
     "recharts": "^3.3.0",
+    "svgo": "^4.0.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "web3": "^4.16.0"
@@ -32,12 +34,27 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "svgo:optimize": "svgo -f src/assets/icons -o src/assets/icons --config=svgo.config.js && svgo public/favicon.svg -o public/favicon.svg --config=svgo.config.js"
+    "svgo:optimize": "svgo -f src/assets/icons -o src/assets/icons --config=svgo.config.js && svgo public/favicon.svg -o public/favicon.svg --config=svgo.config.js",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src"
   },
+  "proxy": "http://localhost:8888",
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": ["**/*.test.ts", "**/*.test.tsx", "**/*.test.js", "**/*.test.jsx"],
+        "rules": {
+          "jest/no-conditional-expect": "off",
+          "@typescript-eslint/no-unused-vars": "off",
+          "testing-library/no-unnecessary-act": "off",
+          "import/first": "off",
+          "jest/no-identical-title": "off",
+          "no-unreachable": "off"
+        }
+      }
     ]
   },
   "browserslist": {
@@ -51,8 +68,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "svgo": "^4.0.0"
   }
 }
