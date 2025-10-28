@@ -1,6 +1,6 @@
 // 确认 index.tsx 启动并将 App 挂载到 #root，同时调用 reportWebVitals
 import React from 'react';
-import { act } from 'react-dom/test-utils';
+import { act } from 'react';
 
 // 将 App 替换为轻量组件，保证稳定渲染
 jest.mock('./App', () => ({ __esModule: true, default: () => (<div>AppRoot</div>) }));

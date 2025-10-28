@@ -70,6 +70,7 @@ const HistoryToolbar: React.FC<HistoryToolbarProps> = ({
         <FormControl size="small" sx={{ minWidth: 140 }}>
           <InputLabel>时间范围</InputLabel>
           <Select value={timeRange} label="时间范围" onChange={(e) => onChangeTimeRange(e.target.value)}>
+            <MenuItem value="all">全部</MenuItem>
             <MenuItem value="24h">近24小时</MenuItem>
             <MenuItem value="7d">近7天</MenuItem>
             <MenuItem value="30d">近30天</MenuItem>

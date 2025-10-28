@@ -466,14 +466,17 @@ function ensureAxiosDefaultsBinding() {
 
 export const apiRuntime = {
   getBaseUrl(): string {
-    try { console.log('[apiRuntime.getBaseUrl] apiConfig.baseUrl=', apiConfig.baseUrl, 'system.baseUrl=', systemService.getConfig().baseUrl); } catch {}
+if (typeof __shouldLog === 'function' ? __shouldLog() : ((process.env.NODE_ENV || '').toLowerCase() !== 'test')) {
+  try { console.log('[apiRuntime.getBaseUrl] apiConfig.baseUrl=', apiConfig.baseUrl, 'system.baseUrl=', systemService.getConfig().baseUrl); } catch {}
+}
     return systemService.getConfig().baseUrl;
   },
   setBaseUrl(url?: string) {
     const normalized = (url || '').trim();
-    try { console.log('[apiRuntime.setBaseUrl]', normalized, 'prev', (axios as any).defaults?.baseURL); } catch {}
+const __shouldLog = () => ((process.env.NODE_ENV || '').toLowerCase() !== 'test');
+if (__shouldLog()) { try { console.log('[apiRuntime.setBaseUrl]', normalized, 'prev', (axios as any).defaults?.baseURL); } catch {} }
     apiConfig.baseUrl = normalized || apiConfig.baseUrl;
-    try { console.log('[apiRuntime.setBaseUrl] assigned apiConfig.baseUrl =', apiConfig.baseUrl); } catch {}
+if (__shouldLog()) { try { console.log('[apiRuntime.setBaseUrl] assigned apiConfig.baseUrl =', apiConfig.baseUrl); } catch {} }
     axios.defaults.baseURL = apiConfig.baseUrl;
     try { (require('axios') as any).defaults.baseURL = apiConfig.baseUrl; } catch {}
     ensureAxiosDefaultsBinding();

@@ -112,6 +112,10 @@ console.warn = (...args: any[]) => {
   if (typeof args[0] === 'string' && args[0].includes('React Router Future Flag Warning')) {
     return;
   }
+  // 过滤 MUI Select 越界值警告（在控件选项修复后应不再出现；此处双保险降噪）
+  if (typeof args[0] === 'string' && args[0].startsWith('MUI: You have provided an out-of-range value')) {
+    return;
+  }
   return originalWarn.apply(console, args as any);
 };
 
