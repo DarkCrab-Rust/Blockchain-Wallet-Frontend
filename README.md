@@ -22,7 +22,7 @@
 - 资产总览：余额卡片与趋势图（`recharts`），首页快捷操作（转账/兑换）。
 - 发送交易：EVM 地址与 BTC Taproot 地址校验；风险评估联动确认弹窗。
 - 交易历史：筛选、分页、自动刷新与可见性优化，错误聚合提示。
-- 跨链桥：源/目标网络选择、余额读取与桥接提交结果提示。
+- 跨链桥：源/目标网络选择、余额读取与桥接提交结果提示；历史列表与状态轮询（分页与刷新）。
 - 设置中心：
   - API 基础设置（URL/Key、保存/测试/清除）
   - 后端健康检查与 Swagger 文档入口
@@ -61,6 +61,8 @@
 - 配置环境：复制 `.env.example` 为 `.env` 并设置 API 地址与密钥
 - 启动开发：`npm start`（默认端口 `3000`）
 
+提示：如端口占用，可使用 `PORT=3060 npm start` 或 `PORT=3035 npm run start`。
+
 详尽步骤、端口/环境问题排查请参见 `docs/FRONTEND_QUICKSTART.md`。
 
 ---
@@ -71,6 +73,8 @@
 - `REACT_APP_API_KEY`：后端鉴权密钥；开发环境未配置时默认使用占位键并启用 Mock。
 - 运行时配置：`src/services/api.ts` 中的 `apiRuntime` 负责管理基础地址与请求配置。
 - UI 主题：`App.tsx` 中定义 MUI 全局主题与组件样式覆盖（按钮、tooltip、drawer 等）。
+
+后端代理：`package.json` 中 `proxy` 默认为 `http://localhost:8888`，与 `.env.example` 的 `REACT_APP_API_URL=http://localhost:8888` 对齐。
 
 ---
 
@@ -101,6 +105,18 @@ npm test -- --coverage
 ```
 
 说明：测试环境下 `ProtectedRoute` 放宽鉴权，避免登录重定向影响页面渲染测试。
+
+---
+
+## 🔗 桥接历史与状态轮询（前端现状）
+
+- 历史列表字段：`id`、`from_chain`、`to_chain`、`token`、`amount`、`status`、`created_at`、`updated_at`
+- 查询参数：`wallet_name`、`page`、`page_size`、`status`（小写，示例：`initiated`/`pending`/`completed`/`failed`）
+- 刷新机制：支持手动刷新；对 `initiated` 与 `pending` 条目进行 10 秒自动轮询状态。
+- 状态查询接口：`GET /api/bridge/:id/status`
+- 交互体验：轮询仅对处于进行中的项；完成/失败状态停止轮询，列表可手动刷新。
+
+说明：`getBridgeHistory` 已与后端参数对齐（`wallet_name` 等），仅桥接相关接口使用该传参，不会影响普通交易历史。
 
 ---
 
