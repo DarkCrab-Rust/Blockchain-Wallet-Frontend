@@ -11,3 +11,31 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* 全局视觉与溢出修复 */
+.card {
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.input-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.slider {
+  margin: 0 -12px; /* 抵消负 margin */
+  padding: 0 12px;
+}
+
+.price {
+  font-variant-numeric: tabular-nums;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* 按钮文字截断修复 */
+.MuiButton-root {
+  min-width: 64px;
+  white-space: nowrap;
+}

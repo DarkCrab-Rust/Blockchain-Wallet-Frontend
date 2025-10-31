@@ -1,23 +1,13 @@
-import { getFeatureFlags } from './featureFlags';
-
 export type NetworkOption = { id: string; name: string };
 
-const BASE_NETWORKS: NetworkOption[] = [
+// 统一只支持 Bitcoin 与 EVM 生态网络
+const NETWORKS: NetworkOption[] = [
+  // 按用户要求调整顺序：BTC → ETH → BSC
+  { id: 'btc', name: 'Bitcoin (Taproot)' },
   { id: 'eth', name: 'Ethereum' },
   { id: 'bsc', name: 'BSC' },
-  { id: 'polygon', name: 'Polygon' },
-];
-
-const OPTIONAL_NETWORKS: NetworkOption[] = [
-  { id: 'solana', name: 'Solana' },
-  { id: 'btc', name: 'Bitcoin (Taproot)' },
 ];
 
 export const getAvailableNetworks = (): NetworkOption[] => {
-  const flags = getFeatureFlags();
-  const include: string[] = [];
-  if (flags.enableSolana) include.push('solana');
-  if (flags.enableBtcTaproot) include.push('btc');
-  const optional = OPTIONAL_NETWORKS.filter((n) => include.includes(n.id));
-  return [...BASE_NETWORKS, ...optional];
+  return NETWORKS;
 };

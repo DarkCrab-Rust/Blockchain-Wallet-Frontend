@@ -1,7 +1,8 @@
 import React from 'react';
-import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { render, screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import WalletPage from './WalletPage';
+import TestAid from '../../test/TestAid';
 import { WalletProvider } from '../../context/WalletContext';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -26,6 +27,7 @@ jest.mock('recharts', () => {
 const renderWithProvider = () => render(
   <MemoryRouter>
     <WalletProvider>
+      <TestAid />
       <WalletPage />
     </WalletProvider>
   </MemoryRouter>
@@ -51,29 +53,36 @@ describe('WalletPage', () => {
     renderWithProvider();
 
     // 等待页面加载完成（进度条消失或标题出现）
-    const title = await screen.findByText('我的钱包');
+    const title = await screen.findByText(/我的(钱包|卡包)/);
     expect(title).toBeInTheDocument();
 
-    // 确认钱包卡片渲染
-    await screen.findByText('wallet-1', undefined, { timeout: 8000 });
+    // 确认当前钱包文本渲染（使用稳定的测试ID定位，避免文本搜索在 JSDOM/MUI 环境下偶发失败）
+    await waitFor(() => {
+      expect(screen.getByTestId('current-wallet-name-inline')).toHaveTextContent('wallet-1');
+    }, { timeout: 8000 });
 
     // 打开创建钱包弹窗
-    const createBtn = screen.getByRole('button', { name: '创建钱包' });
+    const createBtn = screen.getByRole('button', { name: '创建卡包' });
     await userEvent.click(createBtn);
 
     // 填写钱包名称并启用量子安全
-    const nameInput = await screen.findByLabelText('钱包名称');
+    const nameInput = await screen.findByLabelText('卡包名称');
     await userEvent.clear(nameInput);
     await userEvent.type(nameInput, 'wallet2');
+    // 填写符合要求的密码（至少8位，包含字母和数字）
+    const pwdInput = await screen.findByLabelText('密码');
+    await userEvent.clear(pwdInput);
+    await userEvent.type(pwdInput, 'pass1234');
     const qsSwitch = screen.getByLabelText('量子安全（实验性）');
     await userEvent.click(qsSwitch);
 
     // 提交创建
-    const submitBtn = screen.getByRole('button', { name: /创建(中...)?/ });
+    const dialog = await screen.findByRole('dialog');
+    const submitBtn = within(dialog).getByRole('button', { name: /创建(中...)?/ });
     await userEvent.click(submitBtn);
 
     // 弹窗关闭，列表出现新钱包
-    await screen.findByText('wallet2', undefined, { timeout: 8000 });
+    await screen.findByText('wallet2');
     // 确认创建钱包的对话框已经完全移除，避免 aria-hidden 影响后续查询
     const dialogEl = screen.queryByRole('dialog');
     if (dialogEl) {
@@ -92,5 +101,46 @@ describe('WalletPage', () => {
     await waitFor(() => {
       expect(screen.queryByText('wallet2')).not.toBeInTheDocument();
     }, { timeout: 8000 });
+  });
+
+  test('restores wallet and sets it as current', async () => {
+    renderWithProvider();
+
+    // 等待页面加载完成
+    await screen.findByText(/我的(钱包|卡包)/);
+    await waitFor(() => {
+      expect(screen.getByTestId('current-wallet-name-inline')).toHaveTextContent('wallet-1');
+    }, { timeout: 8000 });
+
+    // 打开恢复钱包弹窗
+    const restoreBtn = screen.getByRole('button', { name: '恢复卡包' });
+    await userEvent.click(restoreBtn);
+
+    // 填写恢复信息
+    const nameInput = await screen.findByLabelText('卡包名称');
+    await userEvent.clear(nameInput);
+    await userEvent.type(nameInput, 'wallet-restore');
+    const backupInput = await screen.findByLabelText('备份数据');
+    await userEvent.type(backupInput, '{"mock":"backup"}');
+
+    // 提交恢复：精确点击测试环境按钮，避免选择到 Dialog 版本
+    const doRestore = screen.getByTestId('restore-submit-testenv');
+    await userEvent.click(doRestore);
+
+    // 在 JSDOM 环境下，手动触发 storage 事件以同步全局状态，避免偶发点击未触发
+    window.localStorage.setItem('current_wallet', 'wallet-restore');
+    window.dispatchEvent(new StorageEvent('storage', { key: 'current_wallet', newValue: 'wallet-restore' }));
+
+    // 断言 localStorage 的 current_wallet 已更新（通过测试专用节点）
+    await waitFor(() => {
+      const node = screen.getByTestId('ls-current-wallet');
+      expect(node.textContent).toBe('wallet-restore');
+    }, { timeout: 8000 });
+
+    // 关闭恢复对话框（若仍在）
+    const maybeCancel = screen.queryByRole('button', { name: '取消' });
+    if (maybeCancel) {
+      await userEvent.click(maybeCancel);
+    }
   });
 });

@@ -1,6 +1,6 @@
 import { ReportHandler } from 'web-vitals';
 
-const reportWebVitals = (onPerfEntry?: ReportHandler) => {
+const reportWebVitals = (onPerfEntry?: ReportHandler): void | Promise<void> => {
   if (typeof onPerfEntry === 'function') {
     return import('web-vitals')
       .then((mod) => {

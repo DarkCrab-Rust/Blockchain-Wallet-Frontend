@@ -26,12 +26,10 @@ describe('services/hardware', () => {
     expect(s.accounts).toEqual(addrs);
   });
 
-  test('listAddresses BTC uses bc1p prefix and Solana no prefix', async () => {
+  test('listAddresses BTC uses bc1p prefix', async () => {
     const s = await svc.connect('ledger');
     const btc = await svc.listAddresses(s, 'btc', 1);
     expect(btc[0]).toMatch(/^bc1pmock_btc_0$/);
-    const sol = await svc.listAddresses(s, 'solana', 1);
-    expect(sol[0]).toBe('mock_solana_0');
   });
 
   test('signTransaction and signMessage return tagged strings', async () => {

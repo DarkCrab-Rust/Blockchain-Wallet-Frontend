@@ -1,48 +1,49 @@
 import React from 'react';
-import { Alert, AlertTitle, Button, Box } from '@mui/material';
+import { eventBus } from '../utils/eventBus';
 
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error?: Error;
-}
+type Props = { children: React.ReactNode };
+type State = { hasError: boolean; error?: any };
 
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, ErrorBoundaryState> {
-  constructor(props: { children: React.ReactNode }) {
+export default class ErrorBoundary extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+  static getDerivedStateFromError(error: any): State {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    // 可扩展：上报错误到监控
-    // console.error('ErrorBoundary caught:', error, info);
-  }
-
-  handleReload = () => {
+  componentDidCatch(error: any, info: any) {
     try {
-      // 清除可能导致异常的本地开关或缓存
-      localStorage.removeItem('feature_mock');
+      eventBus.emitApiError({
+        title: '界面异常',
+        message: error?.message || '渲染过程中发生错误',
+        friendlyCategory: 'ui',
+        friendlyEndpoint: '界面渲染',
+        severity: 'error',
+        userAction: '请刷新页面或返回首页',
+        errorContext: { error, info },
+      });
     } catch {}
-    window.location.reload();
-  };
+  }
 
   render() {
     if (this.state.hasError) {
       return (
-        <Box sx={{ p: 2 }}>
-          <Alert severity="error" sx={{ mb: 2 }}
-            action={<Button color="inherit" size="small" onClick={this.handleReload}>刷新页面</Button>}>
-            <AlertTitle>页面出现错误</AlertTitle>
-            {this.state.error?.message || '发生未知错误，请刷新重试'}
-          </Alert>
-        </Box>
+        <div role="alert" style={{ padding: 16 }}>
+          <h2>页面出现错误</h2>
+          <p>请尝试刷新页面或返回首页。</p>
+          <button
+            type="button"
+            onClick={() => {
+              try { localStorage.removeItem('feature_mock'); } catch {}
+              try { window.location.reload(); } catch {}
+            }}
+          >刷新页面</button>
+        </div>
       );
     }
-    return this.props.children as React.ReactElement;
+    return this.props.children;
   }
 }
-
-export default ErrorBoundary;

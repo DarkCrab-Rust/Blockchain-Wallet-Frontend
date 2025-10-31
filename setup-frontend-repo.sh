@@ -29,7 +29,7 @@ REACT_APP_ENABLE_TESTNET=true
 
 # Optional: Custom RPC URLs
 # REACT_APP_ETH_RPC_URL=https://ethereum.publicnode.com
-# REACT_APP_SOL_RPC_URL=https://api.mainnet-beta.solana.com
+# (Solana 已移除，不再需要 SOL RPC URL)
 EOF
 echo "  ✅ .env.example 已创建"
 echo ""
@@ -270,7 +270,6 @@ cat > README.md << 'EOF'
 
 ### ⛓️ 多链支持
 - ✅ Ethereum (ETH)
-- ✅ Solana (SOL)
 - ✅ Polygon (MATIC)
 - ✅ BSC (BNB)
 

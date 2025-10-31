@@ -4,7 +4,7 @@
 import { getFeatureFlags } from '../utils/featureFlags';
 
 export type HardwareWalletType = 'ledger' | 'trezor';
-export type SupportedNetwork = 'eth' | 'solana' | 'polygon' | 'bsc' | 'btc';
+export type SupportedNetwork = 'eth' | 'polygon' | 'bsc' | 'btc';
 
 export interface HardwareSession {
   type: HardwareWalletType;
@@ -50,7 +50,7 @@ export const hardwareWalletService = {
     ensureEnabled(session.type);
     await mockDelay();
     // TODO: use network-specific derivation paths
-    const base = network === 'btc' ? 'bc1p' : network === 'solana' ? '' : '0x';
+    const base = network === 'btc' ? 'bc1p' : '0x';
     const res = Array.from({ length: count }).map((_, i) => `${base}mock_${network}_${i}`);
     session.accounts = res;
     return res;

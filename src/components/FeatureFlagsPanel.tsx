@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, Typography } from '@mui/material';
-import Grid from '@mui/material/GridLegacy';
+import Grid from '@mui/material/Grid';
 import FeatureToggle from './FeatureToggle';
 import { useFeatureFlags } from '../hooks/useFeatureFlags';
 import { setFeatureFlag } from '../utils/featureFlags';
@@ -8,7 +8,7 @@ import { setFeatureFlag } from '../utils/featureFlags';
 const FeatureFlagsPanel: React.FC = () => {
   const flags = useFeatureFlags();
   const updateFlag = (
-    key: 'solana' | 'btc' | 'ledger' | 'trezor' | 'mock',
+    key: 'btc' | 'ledger' | 'trezor' | 'mock',
     value: boolean
   ) => setFeatureFlag(key, value);
 
@@ -17,17 +17,7 @@ const FeatureFlagsPanel: React.FC = () => {
       <CardContent>
         <Typography variant="h6" sx={{ mb: 2 }}>功能开关</Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <FeatureToggle
-              label="启用 Solana 网络"
-              checked={flags.enableSolana}
-              onChange={(checked) => updateFlag('solana', checked)}
-              tooltipTitle="控制是否显示 Solana 相关选项与校验"
-              ariaLabel="启用 Solana 网络"
-              description="控制是否显示 Solana 相关选项与校验"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <FeatureToggle
               label="启用 BTC Taproot"
               checked={flags.enableBtcTaproot}
@@ -37,7 +27,7 @@ const FeatureFlagsPanel: React.FC = () => {
               description="开启后支持 Taproot 地址与网络选择"
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <FeatureToggle
               label="启用 Ledger 集成"
               checked={flags.enableLedger}
@@ -47,7 +37,7 @@ const FeatureFlagsPanel: React.FC = () => {
               description="启用后可在发送页选择硬件签名（占位实现）"
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <FeatureToggle
               label="启用 Trezor 集成"
               checked={flags.enableTrezor}
@@ -57,7 +47,7 @@ const FeatureFlagsPanel: React.FC = () => {
               description="启用后可在发送页选择硬件签名（占位实现）"
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <FeatureToggle
               label="使用 Mock 后端"
               checked={flags.useMockBackend}

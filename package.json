@@ -8,6 +8,7 @@
     "@mui/icons-material": "^7.3.4",
     "@mui/lab": "^7.0.1-beta.18",
     "@mui/material": "^7.3.4",
+    "@tanstack/react-query": "^5.90.5",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^14.3.1",
@@ -23,17 +24,23 @@
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^6.14.2",
     "react-scripts": "5.0.1",
+    "react-window": "^2.2.2",
     "recharts": "^3.3.0",
     "svgo": "^4.0.0",
-    "typescript": "^4.9.5",
+    "typescript": "5.4.5",
     "web-vitals": "^2.1.4",
     "web3": "^4.16.0"
   },
   "scripts": {
     "start": "react-scripts start",
+    "preview": "set PORT=3015 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage",
+    "test:watch": "react-scripts test",
     "eject": "react-scripts eject",
+    "serve:secure": "node server.cjs",
+    "security:check": "node scripts/security-check.js",
     "svgo:optimize": "svgo -f src/assets/icons -o src/assets/icons --config=svgo.config.js && svgo public/favicon.svg -o public/favicon.svg --config=svgo.config.js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src"
   },
@@ -45,7 +52,12 @@
     ],
     "overrides": [
       {
-        "files": ["**/*.test.ts", "**/*.test.tsx", "**/*.test.js", "**/*.test.jsx"],
+        "files": [
+          "**/*.test.ts",
+          "**/*.test.tsx",
+          "**/*.test.js",
+          "**/*.test.jsx"
+        ],
         "rules": {
           "jest/no-conditional-expect": "off",
           "@typescript-eslint/no-unused-vars": "off",

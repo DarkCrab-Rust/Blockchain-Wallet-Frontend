@@ -3,7 +3,7 @@ import { walletService, systemService, apiRuntime } from './api';
 
 jest.mock('../utils/featureFlags', () => ({
   getFeatureFlags: jest.fn(() => ({ useMockBackend: true })),
-  FEATURE_KEYS: { mock: 'mock', solana: 'solana', btc: 'btc', ledger: 'ledger', trezor: 'trezor' },
+  FEATURE_KEYS: { mock: 'mock', btc: 'btc', ledger: 'ledger', trezor: 'trezor' },
 }));
 
 jest.mock('axios');
@@ -113,7 +113,7 @@ describe('services/api - mock backend', () => {
     const request = {
       amount: 2.5,
       source_chain: 'ethereum',
-      target_chain: 'solana',
+      target_chain: 'polygon',
       asset: 'ETH'
     };
     
@@ -226,8 +226,8 @@ describe('services/api - real backend', () => {
   });
 
   test('walletService.bridgeAssets posts payload including wallet_name', async () => {
-    const payload = { amount: 2, source_chain: 'eth', target_chain: 'solana', asset: 'ETH' } as any;
-    mockedAxios.post.mockResolvedValueOnce({ data: { bridge_id: 'b123', status: 'submitted', target_chain: 'solana', amount: 2 } });
+    const payload = { amount: 2, source_chain: 'eth', target_chain: 'polygon', asset: 'ETH' } as any;
+    mockedAxios.post.mockResolvedValueOnce({ data: { bridge_id: 'b123', status: 'submitted', target_chain: 'polygon', amount: 2 } });
     const res = await walletService.bridgeAssets('w1', payload);
     expect(res.status).toBe('submitted');
     expect(mockedAxios.post).toHaveBeenCalledWith('/bridge', expect.objectContaining({ wallet_name: 'w1' }));
@@ -696,7 +696,7 @@ describe('services/api - real backend', () => {
       mockedAxios.post.mockRejectedValueOnce(error);
 
       try {
-        await walletService.bridgeAssets('test', { amount: 1, source_chain: 'eth', target_chain: 'solana', asset: 'ETH' } as any);
+        await walletService.bridgeAssets('test', { amount: 1, source_chain: 'eth', target_chain: 'polygon', asset: 'ETH' } as any);
       } catch (error: any) {
         expect(error.friendlyEndpoint).toBe('跨链桥接');
         expect(error.endpointCategory).toBe('bridge');
@@ -1291,7 +1291,7 @@ describe('services/api - real backend', () => {
       mockedAxios.post.mockRejectedValueOnce(error);
 
       try {
-        await walletService.bridgeAssets('test', { amount: 1, source_chain: 'eth', target_chain: 'solana', asset: 'ETH' } as any);
+        await walletService.bridgeAssets('test', { amount: 1, source_chain: 'eth', target_chain: 'polygon', asset: 'ETH' } as any);
       } catch (error: any) {
         expect(error.friendlyEndpoint).toBe('跨链桥接');
         expect(error.endpointCategory).toBe('bridge');

@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Alert, Button, CircularProgress } from '@mui/material';
 import { Timeline } from '@mui/lab';
-import Grid from '@mui/material/GridLegacy';
+// 兼容当前 MUI 版本，使用 Box 进行简单布局，避免 Grid 类型差异
 import { walletService } from '../../services/api';
-import { Transaction, Wallet } from '../../types';
+import { Wallet } from '../../types';
 import { useWalletContext } from '../../context/WalletContext';
 import { Pagination } from "@mui/material";
 import HistoryToolbar from './HistoryToolbar';
@@ -12,16 +12,16 @@ import HistoryTimelineItem from './HistoryTimelineItem';
 import { safeLocalStorage } from '../../utils/safeLocalStorage';
 import MockModeBanner from '../../components/MockModeBanner';
 import { eventBus } from '../../utils/eventBus';
+import { useTransactions } from '../../hooks/useTransactions';
 
 const HistoryPage: React.FC = () => {
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [selectedWallet, setSelectedWallet] = useState<string>('');
-  const [history, setHistory] = useState<Transaction[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { currentWallet, currentNetwork, setCurrentNetwork } = useWalletContext();
-  const [loading, setLoading] = useState<boolean>(false);
   const [autoRefresh, setAutoRefresh] = useState<boolean>(() => safeLocalStorage.getItem('history_auto_refresh') === 'true');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const deferredSearchQuery = React.useDeferredValue(searchQuery);
   const [page, setPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(() => {
     const saved = safeLocalStorage.getItem("history_page_size");
@@ -29,9 +29,7 @@ const HistoryPage: React.FC = () => {
     return isNaN(n) ? 20 : n;
   });
   const [pageVisible, setPageVisible] = useState<boolean>(() => !document.hidden);
-  const lastFetchKeyRef = React.useRef<string>('');
   const refreshDebounceRef = React.useRef<number | undefined>(undefined);
-  const historyAbortRef = React.useRef<AbortController | null>(null);
 
 
 
@@ -72,62 +70,27 @@ const HistoryPage: React.FC = () => {
     fetchWallets();
   }, [currentWallet]);
 
-  // 拉取历史数据
-  const fetchHistory = useCallback(async () => {
-    if (!selectedWallet) return;
-    if (loading) return; // 防止并发重复请求
-
-    // 若存在上次的请求，先主动取消
-    if (historyAbortRef.current) {
-      try { historyAbortRef.current.abort(); } catch {}
-    }
-    const controller = new AbortController();
-    historyAbortRef.current = controller;
-
-    const key = `${selectedWallet}|${currentNetwork}|${Date.now()}`;
-    lastFetchKeyRef.current = key;
-    setLoading(true);
-    try {
-      const res = await walletService.getTransactionHistory(selectedWallet, currentNetwork, { signal: controller.signal });
-      // 若期间筛选或网络变更导致 key 变化，忽略旧响应
-      if (lastFetchKeyRef.current !== key) return;
-      setHistory(res.transactions);
-      setError(null);
-    } catch (e: any) {
-      if (lastFetchKeyRef.current !== key) return;
-      const code = e?.code || e?.name;
-      const msg = e?.message || '';
-      const isCanceled = code === 'ERR_CANCELED' || code === 'CanceledError' || msg.includes('ERR_ABORTED') || msg.toLowerCase().includes('aborted') || msg.toLowerCase().includes('canceled');
-      if (!isCanceled) {
-        setError(msg || '获取交易历史失败');
-      }
-    } finally {
-      if (lastFetchKeyRef.current === key) setLoading(false);
-    }
-  }, [selectedWallet, currentNetwork, loading]);
+  // React Query：拉取历史数据
+  const { data: historyData = [], refetch, isFetching: loading, error: queryError } = useTransactions({
+    walletName: selectedWallet,
+    network: currentNetwork,
+    autoRefresh,
+    pageVisible,
+  });
 
   // 自动刷新持久化与轮询
   useEffect(() => {
     safeLocalStorage.setItem('history_auto_refresh', String(autoRefresh));
   }, [autoRefresh]);
   useEffect(() => {
-    fetchHistory();
-  }, [fetchHistory]);
-  useEffect(() => {
-    if (!autoRefresh || !pageVisible) return;
-    const id = setInterval(() => {
-      // 仅在未加载中且页面可见时触发
-      if (!loading) {
-        fetchHistory();
-      }
-    }, 60000);
-    return () => clearInterval(id);
-  }, [autoRefresh, pageVisible, fetchHistory, loading]);
+    // 将 Query 错误同步到本地错误态（保持 UI 结构一致）
+    setError(queryError ? (queryError as any)?.message || '获取交易历史失败' : null);
+  }, [queryError]);
 
   React.useEffect(() => {
     // 当筛选条件变化时，重置到第一页
     setPage(1);
-  }, [timeRange, statusFilter, searchQuery, currentNetwork, selectedWallet]);
+  }, [timeRange, statusFilter, deferredSearchQuery, currentNetwork, selectedWallet]);
 
   // 刷新按钮轻微防抖，避免误触造成瞬时多次请求
   const handleRefreshClick = React.useCallback(() => {
@@ -135,9 +98,9 @@ const HistoryPage: React.FC = () => {
       clearTimeout(refreshDebounceRef.current);
     }
     refreshDebounceRef.current = window.setTimeout(() => {
-      fetchHistory();
+      try { refetch(); } catch {}
     }, 250);
-  }, [fetchHistory]);
+  }, [refetch]);
 
   // 组件卸载时清理可能残留的防抖与取消控制器
   useEffect(() => {
@@ -145,15 +108,11 @@ const HistoryPage: React.FC = () => {
       if (refreshDebounceRef.current) {
         clearTimeout(refreshDebounceRef.current);
       }
-      if (historyAbortRef.current) {
-        try { historyAbortRef.current.abort(); } catch {}
-        historyAbortRef.current = null;
-      }
     };
   }, []);
 
   const displayHistory = React.useMemo(() => {
-    let filtered = history;
+    let filtered = historyData;
     const nowSec = Math.floor(Date.now() / 1000);
     let cutoff: number | null = null;
     if (timeRange === '24h') cutoff = nowSec - 24 * 3600;
@@ -166,8 +125,8 @@ const HistoryPage: React.FC = () => {
     if (statusFilter !== 'all') {
       filtered = filtered.filter((tx) => tx.status === statusFilter);
     }
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
+    if (deferredSearchQuery.trim()) {
+      const q = deferredSearchQuery.trim().toLowerCase();
       filtered = filtered.filter((tx) =>
         tx.id?.toLowerCase().includes(q) ||
         tx.from_address?.toLowerCase().includes(q) ||
@@ -175,13 +134,32 @@ const HistoryPage: React.FC = () => {
       );
     }
     return [...filtered].sort((a, b) => b.timestamp - a.timestamp);
-  }, [history, timeRange, statusFilter, searchQuery]);
+  }, [historyData, timeRange, statusFilter, deferredSearchQuery]);
 
   const total = displayHistory.length;
   const pageCount = Math.max(1, Math.ceil(total / pageSize));
   const startIdx = (page - 1) * pageSize;
   const endIdx = Math.min(startIdx + pageSize, total);
   const pagedHistory = displayHistory.slice(startIdx, endIdx);
+
+  // 虚拟滚动参数与状态（大列表时提升渲染性能）
+  const listRef = React.useRef<HTMLDivElement | null>(null);
+  const [scrollTop, setScrollTop] = React.useState(0);
+  const itemHeight = 96; // 每个时间线项的近似高度
+  const containerHeight = 600; // 容器固定高度
+  const useVirtual = pagedHistory.length > 40; // 当列表较大时启用虚拟滚动
+  const buffer = 6; // 额外缓冲渲染项数量
+  const visibleCount = Math.ceil(containerHeight / itemHeight) + buffer;
+  const startVirtual = Math.max(0, Math.floor(scrollTop / itemHeight));
+  const endVirtual = Math.min(pagedHistory.length, startVirtual + visibleCount);
+  const topPad = startVirtual * itemHeight;
+  const bottomPad = Math.max(0, (pagedHistory.length - endVirtual) * itemHeight);
+
+  const handleScroll = React.useCallback(() => {
+    const el = listRef.current;
+    if (!el) return;
+    setScrollTop(el.scrollTop);
+  }, [listRef]);
 
   // CSV转义
   const escapeCSV = (val: any) => {
@@ -194,7 +172,7 @@ const HistoryPage: React.FC = () => {
   };
 
   const handleExportCSV = () => {
-    const headers = ['id', 'time_iso', 'status', 'amount', 'from_address', 'to_address', 'network'];
+    const headers = ['id', 'time_iso', 'status', 'amount', 'from_address', 'to_address', 'network', 'confirmations', 'fee'];
     const rows = displayHistory.map((tx) => [
       tx.id,
       new Date(tx.timestamp * 1000).toISOString(),
@@ -202,7 +180,9 @@ const HistoryPage: React.FC = () => {
       tx.amount,
       tx.from_address,
       tx.to_address,
-      currentNetwork
+      tx.network || currentNetwork,
+      typeof tx.confirmations === 'number' ? tx.confirmations : '',
+      typeof tx.fee === 'number' ? tx.fee : ''
     ]);
     const csv = [headers.join(','), ...rows.map((r) => r.map(escapeCSV).join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -218,14 +198,14 @@ const HistoryPage: React.FC = () => {
 
   return (
     <Box>
-      <MockModeBanner dense showSettingsLink message="Mock 后端已启用：交易历史为本地模拟数据" />
+      <MockModeBanner dense message="Mock 后端已启用：交易历史为本地模拟数据" />
 
       {error && (
         <Alert
           severity="error"
           sx={{ mb: 2 }}
           action={
-            <Button color="inherit" size="small" onClick={fetchHistory} disabled={loading}>
+            <Button color="inherit" size="small" onClick={handleRefreshClick} disabled={loading}>
               重试
             </Button>
           }
@@ -251,43 +231,62 @@ const HistoryPage: React.FC = () => {
         displayEmpty={displayHistory.length === 0}
         onExportCSV={handleExportCSV}
       />
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ flex: '1 1 360px', minWidth: 280 }}>
           <HistoryWalletSelector wallets={wallets} selectedWallet={selectedWallet} onChangeSelectedWallet={setSelectedWallet} />
-        </Grid>
-        <Grid item xs={12}>
-          {loading ? (
-            <Box display="flex" justifyContent="center" py={2}>
-              <CircularProgress size={24} />
-            </Box>
-          ) : displayHistory.length === 0 ? (
-            <Alert severity="info">暂无交易记录</Alert>
-          ) : (
-            <Timeline>
-              {pagedHistory.map((tx) => (
-                <HistoryTimelineItem key={tx.id} tx={tx} network={currentNetwork} />
-              ))}
-            </Timeline>
-          )}
-        </Grid>
-      </Grid>
+        </Box>
+        <Box sx={{ flex: '1 1 100%', minWidth: 280 }}>
+          <Box position="relative" sx={{ minHeight: displayHistory.length === 0 ? 96 : undefined }}>
+            {displayHistory.length === 0 ? (
+              <Alert severity="info">暂无交易记录</Alert>
+            ) : (
+              useVirtual ? (
+                <Box
+                  ref={listRef}
+                  onScroll={handleScroll}
+                  sx={{ height: containerHeight, overflowY: 'auto' }}
+                  data-testid="history-virtual-container"
+                >
+                  <Timeline>
+                    <Box sx={{ height: topPad }} />
+                    {pagedHistory.slice(startVirtual, endVirtual).map((tx) => (
+                      <HistoryTimelineItem key={tx.id} tx={tx} network={currentNetwork} />
+                    ))}
+                    <Box sx={{ height: bottomPad }} />
+                  </Timeline>
+                </Box>
+              ) : (
+                <Timeline>
+                  {pagedHistory.map((tx) => (
+                    <HistoryTimelineItem key={tx.id} tx={tx} network={currentNetwork} />
+                  ))}
+                </Timeline>
+              )
+            )}
+            {loading && (
+              <Box
+                position="absolute"
+                top={0}
+                left={0}
+                right={0}
+                bottom={0}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ pointerEvents: 'none', bgcolor: 'transparent' }}
+              >
+                <CircularProgress size={24} />
+              </Box>
+            )}
+          </Box>
+        </Box>
+      </Box>
 
       {/* 顶部分页与统计 */}
       <Box mt={2} display="flex" alignItems="center" justifyContent="space-between" flexWrap="wrap">
         <Typography variant="body2" color="text.secondary">
           显示 {total === 0 ? 0 : startIdx + 1}–{endIdx} 共 {total} 条
         </Typography>
-        <Pagination
-          count={pageCount}
-          page={page}
-          onChange={(_, value) => setPage(value)}
-          size="small"
-          showFirstButton
-          showLastButton
-        />
-      </Box>
-      {/* 底部分页 */}
-      <Box mt={2} display="flex" alignItems="center" justifyContent="flex-end">
         <Pagination
           count={pageCount}
           page={page}

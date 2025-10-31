@@ -11,12 +11,12 @@ interface HistoryWalletSelectorProps {
 const HistoryWalletSelector: React.FC<HistoryWalletSelectorProps> = ({ wallets, selectedWallet, onChangeSelectedWallet }) => {
   return (
     <FormControl fullWidth>
-      <InputLabel id="history-wallet-select-label">选择钱包</InputLabel>
+      <InputLabel id="history-wallet-select-label">选择卡包</InputLabel>
       <Select
         labelId="history-wallet-select-label"
         id="history-wallet-select"
         value={selectedWallet}
-        label="选择钱包"
+        label="选择卡包"
         onChange={(e) => onChangeSelectedWallet(e.target.value as string)}
       >
         {(Array.isArray(wallets) ? wallets : []).map((w) => (
@@ -27,4 +27,4 @@ const HistoryWalletSelector: React.FC<HistoryWalletSelectorProps> = ({ wallets, 
   );
 };
 
-export default HistoryWalletSelector;
+export default React.memo(HistoryWalletSelector);

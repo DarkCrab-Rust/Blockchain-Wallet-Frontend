@@ -15,8 +15,6 @@ const explorerBase = (net: string) => {
   switch (net) {
     case 'eth':
       return { tx: 'https://etherscan.io/tx/', address: 'https://etherscan.io/address/' };
-    case 'solana':
-      return { tx: 'https://solscan.io/tx/', account: 'https://solscan.io/account/' };
     case 'polygon':
       return { tx: 'https://polygonscan.com/tx/', address: 'https://polygonscan.com/address/' };
     case 'bsc':
@@ -32,7 +30,7 @@ const statusColor = (status: Transaction['status']) => {
   if (status === 'pending') return 'warning';
   return 'error';
 };
-const NETWORK_SYMBOL: Record<string, string> = { eth: 'ETH', solana: 'SOL', polygon: 'MATIC', bsc: 'BNB', btc: 'BTC' };
+const NETWORK_SYMBOL: Record<string, string> = { eth: 'ETH', polygon: 'MATIC', bsc: 'BNB', btc: 'BTC' };
 
 const HistoryTimelineItem: React.FC<HistoryTimelineItemProps> = ({ tx, network }) => {
   const base = explorerBase(network);
@@ -68,6 +66,12 @@ const HistoryTimelineItem: React.FC<HistoryTimelineItemProps> = ({ tx, network }
         <Typography variant="body1" sx={{ fontWeight: 600 }}>
           {tx.amount} {NETWORK_SYMBOL[network] || 'ETH'} · {tx.status}
         </Typography>
+        {/* 新增字段行：网络、确认数、手续费 */}
+        <Box display="flex" alignItems="center" gap={2} mt={0.5}>
+          <Typography variant="body2" color="textSecondary">网络：{tx.network || network}</Typography>
+          <Typography variant="body2" color="textSecondary">确认数：{typeof tx.confirmations === 'number' ? tx.confirmations : '-'}</Typography>
+          <Typography variant="body2" color="textSecondary">手续费：{typeof tx.fee === 'number' ? tx.fee : '-'}</Typography>
+        </Box>
         {/* 交易哈希行：复制与打开浏览器 */}
         <Box display="flex" alignItems="center" gap={1} mt={0.5}>
           <Typography variant="body2" color="textSecondary">Tx: {shorten(tx.id)}</Typography>
@@ -88,4 +92,15 @@ const HistoryTimelineItem: React.FC<HistoryTimelineItemProps> = ({ tx, network }
   );
 };
 
-export default HistoryTimelineItem;
+export default React.memo(
+  HistoryTimelineItem,
+  (prev, next) => (
+    prev.network === next.network &&
+    prev.tx.id === next.tx.id &&
+    prev.tx.status === next.tx.status &&
+    prev.tx.amount === next.tx.amount &&
+    prev.tx.timestamp === next.tx.timestamp &&
+    prev.tx.from_address === next.tx.from_address &&
+    prev.tx.to_address === next.tx.to_address
+  )
+);

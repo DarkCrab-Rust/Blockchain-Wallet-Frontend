@@ -5,10 +5,16 @@ import AppLayout from './components/Layout/AppLayout';
 import ErrorBoundary from './components/ErrorBoundary';
 import { WalletProvider } from './context/WalletContext';
 import { HardwareProvider } from './context/HardwareContext';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './routes/ProtectedRoute';
+import PublicOnlyRoute from './routes/PublicOnlyRoute';
 import { apiRuntime } from './services/api';
 import { safeLocalStorage } from './utils/safeLocalStorage';
+import { setFeatureFlag } from './utils/featureFlags';
 import { normalizeApiUrl } from './utils/url';
 import { Toaster } from 'react-hot-toast';
+import TestAid from './test/TestAid';
+import GlobalErrorListener from './components/GlobalErrorListener';
 
 // 创建现代化主题 - 参考 blockchain.com 设计风格
 const theme = createTheme({
@@ -66,6 +72,8 @@ const theme = createTheme({
           textTransform: 'none',
           fontWeight: 600,
           padding: '12px 24px',
+          minWidth: 150,
+          whiteSpace: 'nowrap',
         },
         contained: {
           background: 'linear-gradient(135deg, #2EECCB 0%, #14B8A6 60%, #0F766E 100%)',
@@ -75,6 +83,14 @@ const theme = createTheme({
             boxShadow: '0 6px 20px 0 rgba(20, 184, 166, 0.35)',
           },
         },
+        outlined: {
+          borderColor: '#14B8A6',
+          color: '#0F766E',
+          '&:hover': {
+            borderColor: '#12A89A',
+            backgroundColor: 'rgba(20, 184, 166, 0.06)'
+          }
+        }
       },
     },
     MuiAppBar: {
@@ -116,6 +132,28 @@ const theme = createTheme({
         transitionDuration: 0,
       },
     },
+    MuiTextField: {
+      defaultProps: {
+        size: 'small',
+        margin: 'dense',
+        variant: 'outlined',
+      },
+    },
+    MuiFormControl: {
+      defaultProps: {
+        margin: 'dense',
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          borderRadius: 10,
+        },
+        input: {
+          padding: '10px 12px',
+        },
+      },
+    },
   },
 });
 
@@ -125,6 +163,11 @@ const SendPage = React.lazy(() => import('./pages/SendPage/SendPage'));
 const HistoryPage = React.lazy(() => import('./pages/HistoryPage/HistoryPage'));
 const BridgePage = React.lazy(() => import('./pages/BridgePage/BridgePage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage/SettingsPage'));
+const LoginPage = React.lazy(() => import('./pages/Auth/LoginPage'));
+const SignupPage = React.lazy(() => import('./pages/Auth/SignupPage'));
+const ExchangePage = React.lazy(() => import('./pages/ExchangePage/ExchangePage'));
+const AssetDetailPage = React.lazy(() => import('./pages/AssetDetailPage/AssetDetailPage'));
+const NewWorldPage = React.lazy(() => import('./pages/NewWorldPage/NewWorldPage'));
 
 function App() {
   useEffect(() => {
@@ -150,6 +193,23 @@ function App() {
       } else if (currentKey === 'test_api_key' && envKey && envKey !== 'test_api_key') {
         safeLocalStorage.setItem('api_key', envKey);
       }
+
+      // 自动启用 Mock 模式并校正本地钱包数据，避免用户需在控制台操作
+      try {
+        setFeatureFlag('mock', true);
+        const raw = safeLocalStorage.getItem('mock_wallets');
+        let arr: any[] | null = null;
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) arr = parsed;
+          } catch {}
+        }
+        if (!arr || !Array.isArray(arr)) {
+          arr = [{ id: 'demo-1', name: 'demo_wallet', quantum_safe: false }];
+        }
+        safeLocalStorage.setItem('mock_wallets', JSON.stringify(arr));
+      } catch {}
     }
   }, []);
 
@@ -157,24 +217,34 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Toaster position="bottom-center" gutter={8} toastOptions={{ duration: 3500 }} />
+      <GlobalErrorListener />
       <Router>
-        <HardwareProvider>
+        <AuthProvider>
+          <HardwareProvider>
           <WalletProvider>
             <AppLayout>
               <ErrorBoundary>
                 <Suspense fallback={<Box sx={{ p: 2 }}><LinearProgress /></Box>}>
                   <Routes>
-                    <Route path="/" element={<WalletPage />} />
-                    <Route path="/send" element={<SendPage />} />
-                    <Route path="/history" element={<HistoryPage />} />
-                    <Route path="/bridge" element={<BridgePage />} />
-                    <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="/" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+                    <Route path="/exchange" element={<ProtectedRoute><ExchangePage /></ProtectedRoute>} />
+                    <Route path="/asset/:symbol" element={<ProtectedRoute><AssetDetailPage /></ProtectedRoute>} />
+                    <Route path="/send" element={<ProtectedRoute><SendPage /></ProtectedRoute>} />
+                    <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
+                    <Route path="/bridge" element={<ProtectedRoute><BridgePage /></ProtectedRoute>} />
+                    <Route path="/newworld" element={<ProtectedRoute><NewWorldPage /></ProtectedRoute>} />
+                    <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+                    <Route path="/login" element={<PublicOnlyRoute><LoginPage /></PublicOnlyRoute>} />
+                    <Route path="/signup" element={<PublicOnlyRoute><SignupPage /></PublicOnlyRoute>} />
                   </Routes>
                 </Suspense>
               </ErrorBoundary>
+              {/* 测试环境下集中渲染测试辅助节点 */}
+              {(process.env.NODE_ENV || '').toLowerCase() === 'test' && <TestAid />}
             </AppLayout>
           </WalletProvider>
-        </HardwareProvider>
+          </HardwareProvider>
+        </AuthProvider>
       </Router>
     </ThemeProvider>
   );

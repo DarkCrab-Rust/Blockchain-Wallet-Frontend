@@ -83,7 +83,7 @@ GitHub Profile:
 #### 仓库信息:
 ```
 仓库名: Blockchain-Wallet-Frontend
-描述: 🎨 Modern blockchain wallet frontend built with React, TypeScript, and Material-UI. Supports Ethereum, Solana, and multi-chain asset management.
+描述: 🎨 Modern blockchain wallet frontend built with React, TypeScript, and Material-UI. Supports Bitcoin and EVM-based networks.
 可见性: Public
 初始化: 不要添加 README, .gitignore, LICENSE (本地已有)
 ```
@@ -213,7 +213,7 @@ git commit -m "feat: 初始化区块链钱包前端项目
 
 - React 18 + TypeScript + Material-UI
 - 完整的钱包管理功能
-- 多链支持 (Ethereum, Solana)
+- 多链支持 (Bitcoin, EVM)
 - 现代化UI设计
 - 完整的测试覆盖"
 
@@ -342,7 +342,6 @@ DarkCrab-Rust
 
 ### ⛓️ 多链支持
 - Ethereum (ETH)
-- Solana (SOL)
 - Polygon (MATIC)
 - BSC (BNB)
 
@@ -601,7 +600,7 @@ MIT License - 详见 [LICENSE](LICENSE)
 ✅ 全栈区块链钱包项目
 ✅ 后端: Rust + Axum + SQLite
 ✅ 前端: React + TypeScript + MUI
-✅ 支持多链 (Ethereum, Solana)
+✅ 支持多链 (Bitcoin, EVM)
 ✅ 完整的测试覆盖
 ✅ 开源项目,可查看代码
 ```

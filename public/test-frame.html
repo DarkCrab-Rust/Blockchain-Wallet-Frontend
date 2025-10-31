@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Frame Test</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 20px; }
+      .row { display: flex; gap: 16px; }
+      iframe { width: 600px; height: 360px; border: 1px solid #ccc; }
+      .box { flex: 1; }
+      .status { margin-top: 8px; color: #555; }
+    </style>
+  </head>
+  <body>
+    <h1>Clickjacking Frame Test</h1>
+    <p>尝试在本页面中以 iframe 方式嵌入两个目标：开发服务与构建静态服务。</p>
+    <div class="row">
+      <div class="box">
+        <h3>Dev (http://localhost:3030/)</h3>
+        <iframe id="dev" src="http://localhost:3030/"></iframe>
+        <div id="devStatus" class="status">加载中...</div>
+      </div>
+      <div class="box">
+        <h3>Build (http://localhost:30890/)</h3>
+        <iframe id="build" src="http://localhost:30890/"></iframe>
+        <div id="buildStatus" class="status">加载中...</div>
+      </div>
+    </div>
+    <script>
+      function updateStatus(id, ok) {
+        var el = document.getElementById(id);
+        el.textContent = ok ? '嵌入成功（可能存在点击劫持风险）' : '嵌入失败或被阻止（预期更安全）';
+        el.style.color = ok ? '#b00' : '#060';
+      }
+      function checkFrame(frameId, statusId) {
+        var frame = document.getElementById(frameId);
+        frame.addEventListener('load', function() {
+          try {
+            // 同源访问才会成功；若 CSP/同源策略阻断，访问会抛异常或无法读取
+            var doc = frame.contentDocument || frame.contentWindow.document;
+            updateStatus(statusId, !!doc);
+          } catch (e) {
+            updateStatus(statusId, false);
+          }
+        });
+      }
+      checkFrame('dev', 'devStatus');
+      checkFrame('build', 'buildStatus');
+    </script>
+  </body>
+</html>

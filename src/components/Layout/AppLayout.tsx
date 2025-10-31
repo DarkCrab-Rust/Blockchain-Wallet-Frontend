@@ -15,7 +15,9 @@ import {
   History, 
   SwapHoriz, 
   Settings,
-  Bolt
+  Bolt,
+  ShowChart,
+  SportsEsports
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { useWalletContext } from '../../context/WalletContext';
@@ -41,10 +43,17 @@ interface AppLayoutProps {
 }
 
 const menuItems = [
-  { text: '钱包', icon: <AccountBalanceWallet />, path: '/' },
+  { text: '卡包', icon: <AccountBalanceWallet />, path: '/' },
+  { text: '交易', icon: <ShowChart />, path: '/exchange' },
   { text: '发送', icon: <Send />, path: '/send' },
   { text: '交易历史', icon: <History />, path: '/history' },
   { text: '跨链桥', icon: <SwapHoriz />, path: '/bridge' },
+  // 新世界：位于“跨链桥”下方，使用游戏手柄图标
+  { text: '新世界', icon: <SportsEsports sx={{
+    background: 'linear-gradient(135deg, #2EECCB 0%, #14B8A6 60%, #0F766E 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent'
+  }} />, path: '/newworld' },
   { text: '设置', icon: <Settings />, path: '/settings' },
 ];
 
@@ -69,6 +78,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     return () => off();
   }, [check]);
 
+  // 在登录/注册页隐藏侧边栏与右上角控制（钱包切换 / API 状态 / Mock 开关）
+  const isAuthRoute = /^\/(login|signup)(?:$|\/?)/.test(location.pathname);
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -83,8 +95,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { sm: isAuthRoute ? '100%' : `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: isAuthRoute ? 0 : `${drawerWidth}px` },
         }}
       >
         <Toolbar>
@@ -121,19 +133,24 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               SecureWallet
             </Typography>
           </Box>
-          {/* 钱包快速切换下拉 */}
-          <WalletSwitcher wallets={wallets || []} currentWallet={currentWallet} onChange={setCurrentWallet} />
+          {/* 登录/注册页不显示右上角控制区 */}
+          {!isAuthRoute && (
+            <>
+              {/* 钱包快速切换下拉 */}
+              <WalletSwitcher wallets={wallets || []} currentWallet={currentWallet} onChange={setCurrentWallet} />
 
-          {/* API 状态指示器 */}
-          <ApiStatusIndicator status={apiStatus} onRefresh={check} />
+              {/* API 状态指示器 */}
+              <ApiStatusIndicator status={apiStatus} onRefresh={check} />
 
-          <FeatureToggle 
-            label="Mock 模式" 
-            checked={flags.useMockBackend} 
-            onChange={(checked) => setFeatureFlag('mock', checked)} 
-            tooltipTitle="Mock 模式快捷开关"
-            ariaLabel="切换 Mock 模式"
-          />
+              <FeatureToggle 
+                label="Mock 模式" 
+                checked={flags.useMockBackend} 
+                onChange={(checked) => setFeatureFlag('mock', checked)} 
+                tooltipTitle="Mock 模式快捷开关"
+                ariaLabel="切换 Mock 模式"
+              />
+            </>
+          )}
           
         </Toolbar>
       </AppBar>
@@ -141,6 +158,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
       >
+        {!isAuthRoute && (
         <Drawer
           variant="temporary"
           open={mobileOpen}
@@ -160,6 +178,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         >
           {drawer}
         </Drawer>
+        )}
+        {!isAuthRoute && (
         <Drawer
           variant="permanent"
           sx={{
@@ -176,10 +196,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         >
           {drawer}
         </Drawer>
+        )}
       </Box>
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{ flexGrow: 1, p: 3, width: { sm: isAuthRoute ? '100%' : `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
         {children}

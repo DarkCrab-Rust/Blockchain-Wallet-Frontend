@@ -122,6 +122,8 @@ describe('HardwareContext', () => {
     });
     await waitFor(() => {
       expect(screen.getByTestId('ledger').textContent).toBe('no');
+    });
+    await waitFor(() => {
       expect(ref.current!.addresses).toEqual([]);
     });
   });
@@ -162,6 +164,8 @@ describe('HardwareContext', () => {
     await waitFor(() => {
       const text = screen.getByTestId('addresses').textContent || '';
       expect(text.includes('addr_')).toBe(true);
+    });
+    await waitFor(() => {
       expect(screen.getByTestId('error').textContent).toBe('');
     });
   });

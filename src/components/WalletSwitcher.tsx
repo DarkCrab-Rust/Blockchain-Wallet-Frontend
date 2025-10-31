@@ -41,10 +41,10 @@ const WalletSwitcher: React.FC<WalletSwitcherProps> = ({ wallets, currentWallet,
         },
       }}
     >
-      <InputLabel>当前钱包</InputLabel>
+      <InputLabel>当前卡包</InputLabel>
       <Select
         value={currentWallet || ''}
-        label="当前钱包"
+        label="当前卡包"
         onChange={(e) => onChange((e.target as HTMLInputElement).value || null)}
       >
         {(wallets || []).map((w) => (

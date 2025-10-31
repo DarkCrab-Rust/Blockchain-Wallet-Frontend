@@ -1,17 +1,25 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import HistoryPage from './HistoryPage';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WalletProvider } from '../../context/WalletContext';
 import { MemoryRouter } from 'react-router-dom';
 
-const renderWithProvider = () => render(
-  <MemoryRouter>
-    <WalletProvider>
-      <HistoryPage />
-    </WalletProvider>
-  </MemoryRouter>
-);
+const renderWithProvider = () => {
+  const client = new QueryClient({
+    defaultOptions: { queries: { staleTime: 60_000, gcTime: 5 * 60_000, retry: 0 } }
+  });
+  return render(
+    <MemoryRouter>
+      <QueryClientProvider client={client}>
+        <WalletProvider>
+          <HistoryPage />
+        </WalletProvider>
+      </QueryClientProvider>
+    </MemoryRouter>
+  );
+};
 
 // 使用真实 localStorage 与内置 mock 逻辑
 describe('HistoryPage', () => {
@@ -26,10 +34,10 @@ describe('HistoryPage', () => {
   test('loads history, refreshes and exports CSV', async () => {
     renderWithProvider();
 
-    // 等待钱包选择出现
-    await screen.findByLabelText('选择钱包', undefined, { timeout: 5000 });
+    // 等待卡包选择出现
+    await screen.findByLabelText('选择卡包');
 
-    const walletSelect = screen.getByLabelText('选择钱包');
+    const walletSelect = screen.getByLabelText('选择卡包');
     await userEvent.click(walletSelect);
     const walletOption = await screen.findByRole('option', { name: 'wallet-1' });
     await userEvent.click(walletOption);

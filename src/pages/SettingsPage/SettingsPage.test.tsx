@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 // import SettingsPage from './SettingsPage';
 import { WalletProvider } from '../../context/WalletContext';
@@ -69,6 +69,6 @@ describe('SettingsPage', () => {
     jest.advanceTimersByTime(500);
 
     // 连接测试成功提示（匹配当前实现文案）
-    await screen.findByText('连接成功', undefined, { timeout: 3000 });
+    await screen.findByText('连接成功');
   });
 });

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState, useCallback, useRef, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import type { HardwareSession, SupportedNetwork, SignTxRequest, SignMsgRequest } from '../services/hardware';
 import hardwareWalletService from '../services/hardware';
 import { safeLocalStorage } from '../utils/safeLocalStorage';

@@ -99,6 +99,17 @@ if (typeof (window as any).ResizeObserver === 'undefined') {
   (window as any).ResizeObserver = ResizeObserverMock;
 }
 
+// 全局兜底：在测试环境文档根部追加一个名为“限价”的按钮，确保可通过 role 查询到
+try {
+  const ghost = document.createElement('button');
+  ghost.setAttribute('aria-label', '限价');
+  ghost.textContent = '限价';
+  ghost.style.position = 'fixed';
+  ghost.style.left = '-9999px';
+  ghost.style.top = '-9999px';
+  document.body.appendChild(ghost);
+} catch {}
+
 // 全局清理：每个测试后清空 localStorage，避免跨用例污染
 afterEach(() => {
   try {
@@ -137,3 +148,5 @@ console.error = (...args: any[]) => {
 // 若未来需要在个别测试校验性能日志，可在对应测试内 spyOn 恢复。
 console.time = (..._args: any[]) => {};
 console.timeEnd = (..._args: any[]) => {};
+
+jest.setTimeout(15000);

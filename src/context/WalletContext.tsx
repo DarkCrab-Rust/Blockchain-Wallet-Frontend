@@ -127,7 +127,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         });
       }
       const k = e.key || '';
-      if (k === FEATURE_KEYS.solana || k === FEATURE_KEYS.btc || k === FEATURE_KEYS.ledger || k === FEATURE_KEYS.trezor) {
+      if (k === FEATURE_KEYS.btc || k === FEATURE_KEYS.ledger || k === FEATURE_KEYS.trezor || k === FEATURE_KEYS.mock) {
         // 特性开关变化可能影响可用网络
         ensureValidNetwork();
       }

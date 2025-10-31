@@ -6,7 +6,6 @@ export function useFeatureFlags() {
 
   useEffect(() => {
     const shallowEqual = (a: typeof flags, b: typeof flags) =>
-      a.enableSolana === b.enableSolana &&
       a.enableBtcTaproot === b.enableBtcTaproot &&
       a.enableLedger === b.enableLedger &&
       a.enableTrezor === b.enableTrezor &&

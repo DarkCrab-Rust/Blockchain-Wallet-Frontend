@@ -1,6 +1,5 @@
 // 简单特性开关：通过 localStorage 覆盖，默认读取环境变量
 export type FeatureFlags = {
-  enableSolana: boolean;
   enableBtcTaproot: boolean;
   enableLedger: boolean;
   enableTrezor: boolean;
@@ -18,7 +17,6 @@ const ls = typeof window !== 'undefined' ? window.localStorage : undefined;
 export const FEATURE_EVENT = 'featureflags-changed';
 
 export const FEATURE_KEYS = {
-  solana: 'feature_solana',
   btc: 'feature_btc_taproot',
   ledger: 'feature_ledger',
   trezor: 'feature_trezor',
@@ -27,8 +25,7 @@ export const FEATURE_KEYS = {
 
 export const getFeatureFlags = (): FeatureFlags => {
   const fallback: FeatureFlags = {
-    enableSolana: envBool(process.env.REACT_APP_ENABLE_SOLANA, true),
-    enableBtcTaproot: envBool(process.env.REACT_APP_ENABLE_BTC_TAPROOT, false),
+    enableBtcTaproot: envBool(process.env.REACT_APP_ENABLE_BTC_TAPROOT, true),
     enableLedger: envBool(process.env.REACT_APP_ENABLE_LEDGER, false),
     enableTrezor: envBool(process.env.REACT_APP_ENABLE_TREZOR, false),
     // 开发/测试环境默认启用 Mock 后端（可被环境变量或 localStorage 覆盖）
@@ -44,7 +41,6 @@ export const getFeatureFlags = (): FeatureFlags => {
     return envBool(v, def);
   };
   return {
-    enableSolana: read(FEATURE_KEYS.solana, fallback.enableSolana),
     enableBtcTaproot: read(FEATURE_KEYS.btc, fallback.enableBtcTaproot),
     enableLedger: read(FEATURE_KEYS.ledger, fallback.enableLedger),
     enableTrezor: read(FEATURE_KEYS.trezor, fallback.enableTrezor),

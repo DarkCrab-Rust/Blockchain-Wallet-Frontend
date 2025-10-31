@@ -33,10 +33,10 @@ describe('SendPage performance', () => {
   test('prevents duplicate submissions and shows success', async () => {
     await renderWithProvider();
 
-    // 等待钱包选择出现
-    await screen.findByLabelText('选择钱包');
+    // 等待卡包选择出现
+    await screen.findByLabelText('选择卡包');
 
-    const walletSelect = screen.getByLabelText('选择钱包');
+    const walletSelect = screen.getByLabelText('选择卡包');
     await act(async () => { await userEvent.click(walletSelect); });
     const walletOption = await screen.findByRole('option', { name: 'wallet-1' });
     await act(async () => { await userEvent.click(walletOption); });
@@ -64,14 +64,13 @@ describe('SendPage performance', () => {
     // 再次点击应被阻止或不重复提交
     // 发送过程进行中，此时按钮可能禁用，避免重复点击导致错误
     // 等待结果提示出现，确认发送成功
-     
-     await screen.findByText(/交易已提交|成功|请等待处理/i, undefined, { timeout: 5000 });
+    await screen.findByText(/交易已提交|成功|请等待处理/i);
   });
 
   test('validates form inputs', async () => {
     await renderWithProvider();
 
-    await screen.findByLabelText('选择钱包');
+    await screen.findByLabelText('选择卡包');
 
     const submitButton = screen.getByRole('button', { name: /发送|提交/i });
     expect(submitButton).toBeDisabled();
